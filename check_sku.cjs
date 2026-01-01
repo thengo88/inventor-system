@@ -1,0 +1,10 @@
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('server/database.db');
+db.all("SELECT sku, sku_plain, warehouse FROM erp_stock WHERE sku LIKE '%9012308046%'", (err, rows) => {
+    if (err) {
+        console.error(err);
+    } else {
+        console.log(JSON.stringify(rows, null, 2));
+    }
+    db.close();
+});

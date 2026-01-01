@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: inventor-server
+    env: node
+    plan: free
+    buildCommand: cd server && npm install
+    startCommand: cd server && node index.cjs
+    envVars:
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: TURSO_AUTH_TOKEN
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: PUPPETEER_SKIP_DOWNLOAD
+        value: "true"

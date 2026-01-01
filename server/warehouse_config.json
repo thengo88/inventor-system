@@ -1,0 +1,2826 @@
+{
+  "aisleList": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "K"
+  ],
+  "layoutData": {
+    "B": [
+      {
+        "name": "Khu B1",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "B1-1",
+                "label": null
+              },
+              {
+                "key": "B1-2",
+                "label": null
+              },
+              {
+                "key": "B1-3",
+                "label": null
+              },
+              {
+                "key": "B1-4",
+                "label": null
+              },
+              {
+                "key": "B1-5",
+                "label": null
+              },
+              {
+                "key": "B1-6",
+                "label": null
+              },
+              {
+                "key": "B1-7",
+                "label": null
+              },
+              {
+                "key": "B1-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "B1-9",
+                "label": null
+              },
+              {
+                "key": "B1-10",
+                "label": null
+              },
+              {
+                "key": "B1-11",
+                "label": null
+              },
+              {
+                "key": "B1-12",
+                "label": null
+              },
+              {
+                "key": "B1-13",
+                "label": null
+              },
+              {
+                "key": "B1-14",
+                "label": null
+              },
+              {
+                "key": "B1-15",
+                "label": null
+              },
+              {
+                "key": "B1-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu B2",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "B2-1",
+                "label": null
+              },
+              {
+                "key": "B2-2",
+                "label": null
+              },
+              {
+                "key": "B2-3",
+                "label": null
+              },
+              {
+                "key": "B2-4",
+                "label": null
+              },
+              {
+                "key": "B2-5",
+                "label": null
+              },
+              {
+                "key": "B2-6",
+                "label": null
+              },
+              {
+                "key": "B2-7",
+                "label": null
+              },
+              {
+                "key": "B2-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "B2-9",
+                "label": null
+              },
+              {
+                "key": "B2-10",
+                "label": null
+              },
+              {
+                "key": "B2-11",
+                "label": null
+              },
+              {
+                "key": "B2-12",
+                "label": null
+              },
+              {
+                "key": "B2-13",
+                "label": null
+              },
+              {
+                "key": "B2-14",
+                "label": null
+              },
+              {
+                "key": "B2-15",
+                "label": null
+              },
+              {
+                "key": "B2-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu B3",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "B3-1",
+                "label": null
+              },
+              {
+                "key": "B3-2",
+                "label": null
+              },
+              {
+                "key": "B3-3",
+                "label": null
+              },
+              {
+                "key": "B3-4",
+                "label": null
+              },
+              {
+                "key": "B3-5",
+                "label": null
+              },
+              {
+                "key": "B3-6",
+                "label": null
+              },
+              {
+                "key": "B3-7",
+                "label": null
+              },
+              {
+                "key": "B3-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "B3-9",
+                "label": null
+              },
+              {
+                "key": "B3-10",
+                "label": null
+              },
+              {
+                "key": "B3-11",
+                "label": null
+              },
+              {
+                "key": "B3-12",
+                "label": null
+              },
+              {
+                "key": "B3-13",
+                "label": null
+              },
+              {
+                "key": "B3-14",
+                "label": null
+              },
+              {
+                "key": "B3-15",
+                "label": null
+              },
+              {
+                "key": "B3-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      }
+    ],
+    "C": [
+      {
+        "name": "Khu C1",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "C1-1",
+                "label": null
+              },
+              {
+                "key": "C1-2",
+                "label": null
+              },
+              {
+                "key": "C1-3",
+                "label": null
+              },
+              {
+                "key": "C1-4",
+                "label": null
+              },
+              {
+                "key": "C1-5",
+                "label": null
+              },
+              {
+                "key": "C1-6",
+                "label": null
+              },
+              {
+                "key": "C1-7",
+                "label": null
+              },
+              {
+                "key": "C1-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "C1-9",
+                "label": null
+              },
+              {
+                "key": "C1-10",
+                "label": null
+              },
+              {
+                "key": "C1-11",
+                "label": null
+              },
+              {
+                "key": "C1-12",
+                "label": null
+              },
+              {
+                "key": "C1-13",
+                "label": null
+              },
+              {
+                "key": "C1-14",
+                "label": null
+              },
+              {
+                "key": "C1-15",
+                "label": null
+              },
+              {
+                "key": "C1-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu C2",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "C2-1",
+                "label": null
+              },
+              {
+                "key": "C2-2",
+                "label": null
+              },
+              {
+                "key": "C2-3",
+                "label": null
+              },
+              {
+                "key": "C2-4",
+                "label": null
+              },
+              {
+                "key": "C2-5",
+                "label": null
+              },
+              {
+                "key": "C2-6",
+                "label": null
+              },
+              {
+                "key": "C2-7",
+                "label": null
+              },
+              {
+                "key": "C2-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "C2-9",
+                "label": null
+              },
+              {
+                "key": "C2-10",
+                "label": null
+              },
+              {
+                "key": "C2-11",
+                "label": null
+              },
+              {
+                "key": "C2-12",
+                "label": null
+              },
+              {
+                "key": "C2-13",
+                "label": null
+              },
+              {
+                "key": "C2-14",
+                "label": null
+              },
+              {
+                "key": "C2-15",
+                "label": null
+              },
+              {
+                "key": "C2-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu C3",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "C3-1",
+                "label": null
+              },
+              {
+                "key": "C3-2",
+                "label": null
+              },
+              {
+                "key": "C3-3",
+                "label": null
+              },
+              {
+                "key": "C3-4",
+                "label": null
+              },
+              {
+                "key": "C3-5",
+                "label": null
+              },
+              {
+                "key": "C3-6",
+                "label": null
+              },
+              {
+                "key": "C3-7",
+                "label": null
+              },
+              {
+                "key": "C3-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "C3-9",
+                "label": null
+              },
+              {
+                "key": "C3-10",
+                "label": null
+              },
+              {
+                "key": "C3-11",
+                "label": null
+              },
+              {
+                "key": "C3-12",
+                "label": null
+              },
+              {
+                "key": "C3-13",
+                "label": null
+              },
+              {
+                "key": "C3-14",
+                "label": null
+              },
+              {
+                "key": "C3-15",
+                "label": null
+              },
+              {
+                "key": "C3-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu C4",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "C4-1",
+                "label": null
+              },
+              {
+                "key": "C4-2",
+                "label": null
+              },
+              {
+                "key": "C4-3",
+                "label": null
+              },
+              {
+                "key": "C4-4",
+                "label": null
+              },
+              {
+                "key": "C4-5",
+                "label": null
+              },
+              {
+                "key": "C4-6",
+                "label": null
+              },
+              {
+                "key": "C4-7",
+                "label": null
+              },
+              {
+                "key": "C4-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "C4-9",
+                "label": null
+              },
+              {
+                "key": "C4-10",
+                "label": null
+              },
+              {
+                "key": "C4-11",
+                "label": null
+              },
+              {
+                "key": "C4-12",
+                "label": null
+              },
+              {
+                "key": "C4-13",
+                "label": null
+              },
+              {
+                "key": "C4-14",
+                "label": null
+              },
+              {
+                "key": "C4-15",
+                "label": null
+              },
+              {
+                "key": "C4-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      }
+    ],
+    "D": [
+      {
+        "name": "Khu D1",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "D1-1",
+                "label": null
+              },
+              {
+                "key": "D1-2",
+                "label": null
+              },
+              {
+                "key": "D1-3",
+                "label": null
+              },
+              {
+                "key": "D1-4",
+                "label": null
+              },
+              {
+                "key": "D1-5",
+                "label": null
+              },
+              {
+                "key": "D1-6",
+                "label": null
+              },
+              {
+                "key": "D1-7",
+                "label": null
+              },
+              {
+                "key": "D1-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "D1-9",
+                "label": null
+              },
+              {
+                "key": "D1-10",
+                "label": null
+              },
+              {
+                "key": "D1-11",
+                "label": null
+              },
+              {
+                "key": "D1-12",
+                "label": null
+              },
+              {
+                "key": "D1-13",
+                "label": null
+              },
+              {
+                "key": "D1-14",
+                "label": null
+              },
+              {
+                "key": "D1-15",
+                "label": null
+              },
+              {
+                "key": "D1-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu D2",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "D2-1",
+                "label": null
+              },
+              {
+                "key": "D2-2",
+                "label": null
+              },
+              {
+                "key": "D2-3",
+                "label": null
+              },
+              {
+                "key": "D2-4",
+                "label": null
+              },
+              {
+                "key": "D2-5",
+                "label": null
+              },
+              {
+                "key": "D2-6",
+                "label": null
+              },
+              {
+                "key": "D2-7",
+                "label": null
+              },
+              {
+                "key": "D2-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "D2-9",
+                "label": null
+              },
+              {
+                "key": "D2-10",
+                "label": null
+              },
+              {
+                "key": "D2-11",
+                "label": null
+              },
+              {
+                "key": "D2-12",
+                "label": null
+              },
+              {
+                "key": "D2-13",
+                "label": null
+              },
+              {
+                "key": "D2-14",
+                "label": null
+              },
+              {
+                "key": "D2-15",
+                "label": null
+              },
+              {
+                "key": "D2-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "KHU D3",
+        "tiers": [
+          {
+            "name": "ĐỂ SỌT LẤY HÀNG",
+            "bins": [
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              }
+            ],
+            "colorHex": "FF9E9E9E"
+          }
+        ]
+      },
+      {
+        "name": "Khu D4",
+        "tiers": [
+          {
+            "name": "SỌT ĐỂ LẤY HÀNG",
+            "bins": [
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              },
+              {
+                "key": "Mới",
+                "label": null
+              }
+            ],
+            "colorHex": "FF9E9E9E"
+          }
+        ]
+      }
+    ],
+    "E": [
+      {
+        "name": "Khu E1",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "E1-1",
+                "label": null
+              },
+              {
+                "key": "E1-2",
+                "label": null
+              },
+              {
+                "key": "E1-3",
+                "label": null
+              },
+              {
+                "key": "E1-4",
+                "label": null
+              },
+              {
+                "key": "E1-5",
+                "label": null
+              },
+              {
+                "key": "E1-6",
+                "label": null
+              },
+              {
+                "key": "E1-7",
+                "label": null
+              },
+              {
+                "key": "E1-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "E1-9",
+                "label": null
+              },
+              {
+                "key": "E1-10",
+                "label": null
+              },
+              {
+                "key": "E1-11",
+                "label": null
+              },
+              {
+                "key": "E1-12",
+                "label": null
+              },
+              {
+                "key": "E1-13",
+                "label": null
+              },
+              {
+                "key": "E1-14",
+                "label": null
+              },
+              {
+                "key": "E1-15",
+                "label": null
+              },
+              {
+                "key": "E1-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu E2",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "E2-1",
+                "label": null
+              },
+              {
+                "key": "E2-2",
+                "label": null
+              },
+              {
+                "key": "E2-3",
+                "label": null
+              },
+              {
+                "key": "E2-4",
+                "label": null
+              },
+              {
+                "key": "E2-5",
+                "label": null
+              },
+              {
+                "key": "E2-6",
+                "label": null
+              },
+              {
+                "key": "E2-7",
+                "label": null
+              },
+              {
+                "key": "E2-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "E2-9",
+                "label": null
+              },
+              {
+                "key": "E2-10",
+                "label": null
+              },
+              {
+                "key": "E2-11",
+                "label": null
+              },
+              {
+                "key": "E2-12",
+                "label": null
+              },
+              {
+                "key": "E2-13",
+                "label": null
+              },
+              {
+                "key": "E2-14",
+                "label": null
+              },
+              {
+                "key": "E2-15",
+                "label": null
+              },
+              {
+                "key": "E2-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu E3",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "E3-1",
+                "label": null
+              },
+              {
+                "key": "E3-2",
+                "label": null
+              },
+              {
+                "key": "E3-3",
+                "label": null
+              },
+              {
+                "key": "E3-4",
+                "label": null
+              },
+              {
+                "key": "E3-5",
+                "label": null
+              },
+              {
+                "key": "E3-6",
+                "label": null
+              },
+              {
+                "key": "E3-7",
+                "label": null
+              },
+              {
+                "key": "E3-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "E3-9",
+                "label": null
+              },
+              {
+                "key": "E3-10",
+                "label": null
+              },
+              {
+                "key": "E3-11",
+                "label": null
+              },
+              {
+                "key": "E3-12",
+                "label": null
+              },
+              {
+                "key": "E3-13",
+                "label": null
+              },
+              {
+                "key": "E3-14",
+                "label": null
+              },
+              {
+                "key": "E3-15",
+                "label": null
+              },
+              {
+                "key": "E3-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu E4",
+        "tiers": [
+          {
+            "name": "SỌT ĐỂ LẤY HÀNG",
+            "bins": [
+              {
+                "key": "E4-1",
+                "label": null
+              },
+              {
+                "key": "E4-2",
+                "label": null
+              },
+              {
+                "key": "E4-3",
+                "label": null
+              },
+              {
+                "key": "E4-4",
+                "label": null
+              },
+              {
+                "key": "E4-5",
+                "label": null
+              },
+              {
+                "key": "E4-6",
+                "label": null
+              },
+              {
+                "key": "E4-7",
+                "label": null
+              },
+              {
+                "key": "E4-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          }
+        ]
+      }
+    ],
+    "F": [
+      {
+        "name": "Khu F1",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "F1-1",
+                "label": null
+              },
+              {
+                "key": "F1-2",
+                "label": null
+              },
+              {
+                "key": "F1-3",
+                "label": null
+              },
+              {
+                "key": "F1-4",
+                "label": null
+              },
+              {
+                "key": "F1-5",
+                "label": null
+              },
+              {
+                "key": "F1-6",
+                "label": null
+              },
+              {
+                "key": "F1-7",
+                "label": null
+              },
+              {
+                "key": "F1-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "F1-9",
+                "label": null
+              },
+              {
+                "key": "F1-10",
+                "label": null
+              },
+              {
+                "key": "F1-11",
+                "label": null
+              },
+              {
+                "key": "F1-12",
+                "label": null
+              },
+              {
+                "key": "F1-13",
+                "label": null
+              },
+              {
+                "key": "F1-14",
+                "label": null
+              },
+              {
+                "key": "F1-15",
+                "label": null
+              },
+              {
+                "key": "F1-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu F2",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "F2-1",
+                "label": null
+              },
+              {
+                "key": "F2-2",
+                "label": null
+              },
+              {
+                "key": "F2-3",
+                "label": null
+              },
+              {
+                "key": "F2-4",
+                "label": null
+              },
+              {
+                "key": "F2-5",
+                "label": null
+              },
+              {
+                "key": "F2-6",
+                "label": null
+              },
+              {
+                "key": "F2-7",
+                "label": null
+              },
+              {
+                "key": "F2-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "F2-9",
+                "label": null
+              },
+              {
+                "key": "F2-10",
+                "label": null
+              },
+              {
+                "key": "F2-11",
+                "label": null
+              },
+              {
+                "key": "F2-12",
+                "label": null
+              },
+              {
+                "key": "F2-13",
+                "label": null
+              },
+              {
+                "key": "F2-14",
+                "label": null
+              },
+              {
+                "key": "F2-15",
+                "label": null
+              },
+              {
+                "key": "F2-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu F3",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "F3-1",
+                "label": null
+              },
+              {
+                "key": "F3-2",
+                "label": null
+              },
+              {
+                "key": "F3-3",
+                "label": null
+              },
+              {
+                "key": "F3-4",
+                "label": null
+              },
+              {
+                "key": "F3-5",
+                "label": null
+              },
+              {
+                "key": "F3-6",
+                "label": null
+              },
+              {
+                "key": "F3-7",
+                "label": null
+              },
+              {
+                "key": "F3-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "F3-9",
+                "label": null
+              },
+              {
+                "key": "F3-10",
+                "label": null
+              },
+              {
+                "key": "F3-11",
+                "label": null
+              },
+              {
+                "key": "F3-12",
+                "label": null
+              },
+              {
+                "key": "F3-13",
+                "label": null
+              },
+              {
+                "key": "F3-14",
+                "label": null
+              },
+              {
+                "key": "F3-15",
+                "label": null
+              },
+              {
+                "key": "F3-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu F4",
+        "tiers": [
+          {
+            "name": "SỌT ĐỂ LẤY HÀNG",
+            "bins": [
+              {
+                "key": "F4-1",
+                "label": null
+              },
+              {
+                "key": "F4-2",
+                "label": null
+              },
+              {
+                "key": "F4-3",
+                "label": null
+              },
+              {
+                "key": "F4-4",
+                "label": null
+              },
+              {
+                "key": "F4-5",
+                "label": null
+              },
+              {
+                "key": "F4-6",
+                "label": null
+              },
+              {
+                "key": "F4-7",
+                "label": null
+              },
+              {
+                "key": "F4-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          }
+        ]
+      }
+    ],
+    "G": [
+      {
+        "name": "Khu G1",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "G1-1",
+                "label": null
+              },
+              {
+                "key": "G1-2",
+                "label": null
+              },
+              {
+                "key": "G1-3",
+                "label": null
+              },
+              {
+                "key": "G1-4",
+                "label": null
+              },
+              {
+                "key": "G1-5",
+                "label": null
+              },
+              {
+                "key": "G1-6",
+                "label": null
+              },
+              {
+                "key": "G1-7",
+                "label": null
+              },
+              {
+                "key": "G1-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "G1-9",
+                "label": null
+              },
+              {
+                "key": "G1-10",
+                "label": null
+              },
+              {
+                "key": "G1-11",
+                "label": null
+              },
+              {
+                "key": "G1-12",
+                "label": null
+              },
+              {
+                "key": "G1-13",
+                "label": null
+              },
+              {
+                "key": "G1-14",
+                "label": null
+              },
+              {
+                "key": "G1-15",
+                "label": null
+              },
+              {
+                "key": "G1-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu G2",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "G2-1",
+                "label": null
+              },
+              {
+                "key": "G2-2",
+                "label": null
+              },
+              {
+                "key": "G2-3",
+                "label": null
+              },
+              {
+                "key": "G2-4",
+                "label": null
+              },
+              {
+                "key": "G2-5",
+                "label": null
+              },
+              {
+                "key": "G2-6",
+                "label": null
+              },
+              {
+                "key": "G2-7",
+                "label": null
+              },
+              {
+                "key": "G2-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "G2-9",
+                "label": null
+              },
+              {
+                "key": "G2-10",
+                "label": null
+              },
+              {
+                "key": "G2-11",
+                "label": null
+              },
+              {
+                "key": "G2-12",
+                "label": null
+              },
+              {
+                "key": "G2-13",
+                "label": null
+              },
+              {
+                "key": "G2-14",
+                "label": null
+              },
+              {
+                "key": "G2-15",
+                "label": null
+              },
+              {
+                "key": "G2-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu G3",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "G3-1",
+                "label": null
+              },
+              {
+                "key": "G3-2",
+                "label": null
+              },
+              {
+                "key": "G3-3",
+                "label": null
+              },
+              {
+                "key": "G3-4",
+                "label": null
+              },
+              {
+                "key": "G3-5",
+                "label": null
+              },
+              {
+                "key": "G3-6",
+                "label": null
+              },
+              {
+                "key": "G3-7",
+                "label": null
+              },
+              {
+                "key": "G3-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "G3-9",
+                "label": null
+              },
+              {
+                "key": "G3-10",
+                "label": null
+              },
+              {
+                "key": "G3-11",
+                "label": null
+              },
+              {
+                "key": "G3-12",
+                "label": null
+              },
+              {
+                "key": "G3-13",
+                "label": null
+              },
+              {
+                "key": "G3-14",
+                "label": null
+              },
+              {
+                "key": "G3-15",
+                "label": null
+              },
+              {
+                "key": "G3-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu G4",
+        "tiers": [
+          {
+            "name": "SỌT ĐỂ LẤY HÀNG",
+            "bins": [
+              {
+                "key": "G4-1",
+                "label": null
+              },
+              {
+                "key": "G4-2",
+                "label": null
+              },
+              {
+                "key": "G4-3",
+                "label": null
+              },
+              {
+                "key": "G4-4",
+                "label": null
+              },
+              {
+                "key": "G4-5",
+                "label": null
+              },
+              {
+                "key": "G4-6",
+                "label": null
+              },
+              {
+                "key": "G4-7",
+                "label": null
+              },
+              {
+                "key": "G4-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          }
+        ]
+      }
+    ],
+    "H": [
+      {
+        "name": "Khu H1",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "H1-1",
+                "label": null
+              },
+              {
+                "key": "H1-2",
+                "label": null
+              },
+              {
+                "key": "H1-3",
+                "label": null
+              },
+              {
+                "key": "H1-4",
+                "label": null
+              },
+              {
+                "key": "H1-5",
+                "label": null
+              },
+              {
+                "key": "H1-6",
+                "label": null
+              },
+              {
+                "key": "H1-7",
+                "label": null
+              },
+              {
+                "key": "H1-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "H1-9",
+                "label": null
+              },
+              {
+                "key": "H1-10",
+                "label": null
+              },
+              {
+                "key": "H1-11",
+                "label": null
+              },
+              {
+                "key": "H1-12",
+                "label": null
+              },
+              {
+                "key": "H1-13",
+                "label": null
+              },
+              {
+                "key": "H1-14",
+                "label": null
+              },
+              {
+                "key": "H1-15",
+                "label": null
+              },
+              {
+                "key": "H1-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu H2",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "H2-1",
+                "label": null
+              },
+              {
+                "key": "H2-2",
+                "label": null
+              },
+              {
+                "key": "H2-3",
+                "label": null
+              },
+              {
+                "key": "H2-4",
+                "label": null
+              },
+              {
+                "key": "H2-5",
+                "label": null
+              },
+              {
+                "key": "H2-6",
+                "label": null
+              },
+              {
+                "key": "H2-7",
+                "label": null
+              },
+              {
+                "key": "H2-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "H2-9",
+                "label": null
+              },
+              {
+                "key": "H2-10",
+                "label": null
+              },
+              {
+                "key": "H2-11",
+                "label": null
+              },
+              {
+                "key": "H2-12",
+                "label": null
+              },
+              {
+                "key": "H2-13",
+                "label": null
+              },
+              {
+                "key": "H2-14",
+                "label": null
+              },
+              {
+                "key": "H2-15",
+                "label": null
+              },
+              {
+                "key": "H2-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu H3",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "H3-1",
+                "label": null
+              },
+              {
+                "key": "H3-2",
+                "label": null
+              },
+              {
+                "key": "H3-3",
+                "label": null
+              },
+              {
+                "key": "H3-4",
+                "label": null
+              },
+              {
+                "key": "H3-5",
+                "label": null
+              },
+              {
+                "key": "H3-6",
+                "label": null
+              },
+              {
+                "key": "H3-7",
+                "label": null
+              },
+              {
+                "key": "H3-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "H3-9",
+                "label": null
+              },
+              {
+                "key": "H3-10",
+                "label": null
+              },
+              {
+                "key": "H3-11",
+                "label": null
+              },
+              {
+                "key": "H3-12",
+                "label": null
+              },
+              {
+                "key": "H3-13",
+                "label": null
+              },
+              {
+                "key": "H3-14",
+                "label": null
+              },
+              {
+                "key": "H3-15",
+                "label": null
+              },
+              {
+                "key": "H3-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu H4",
+        "tiers": [
+          {
+            "name": "SỌT ĐỂ LẤY HÀNG",
+            "bins": [
+              {
+                "key": "H4-1",
+                "label": null
+              },
+              {
+                "key": "H4-2",
+                "label": null
+              },
+              {
+                "key": "H4-3",
+                "label": null
+              },
+              {
+                "key": "H4-4",
+                "label": null
+              },
+              {
+                "key": "H4-5",
+                "label": null
+              },
+              {
+                "key": "H4-6",
+                "label": null
+              },
+              {
+                "key": "H4-7",
+                "label": null
+              },
+              {
+                "key": "H4-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          }
+        ]
+      }
+    ],
+    "I": [
+      {
+        "name": "Khu I1",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "I1-1",
+                "label": null
+              },
+              {
+                "key": "I1-2",
+                "label": null
+              },
+              {
+                "key": "I1-3",
+                "label": null
+              },
+              {
+                "key": "I1-4",
+                "label": null
+              },
+              {
+                "key": "I1-5",
+                "label": null
+              },
+              {
+                "key": "I1-6",
+                "label": null
+              },
+              {
+                "key": "I1-7",
+                "label": null
+              },
+              {
+                "key": "I1-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "I1-9",
+                "label": null
+              },
+              {
+                "key": "I1-10",
+                "label": null
+              },
+              {
+                "key": "I1-11",
+                "label": null
+              },
+              {
+                "key": "I1-12",
+                "label": null
+              },
+              {
+                "key": "I1-13",
+                "label": null
+              },
+              {
+                "key": "I1-14",
+                "label": null
+              },
+              {
+                "key": "I1-15",
+                "label": null
+              },
+              {
+                "key": "I1-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu I2",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "I2-1",
+                "label": null
+              },
+              {
+                "key": "I2-2",
+                "label": null
+              },
+              {
+                "key": "I2-3",
+                "label": null
+              },
+              {
+                "key": "I2-4",
+                "label": null
+              },
+              {
+                "key": "I2-5",
+                "label": null
+              },
+              {
+                "key": "I2-6",
+                "label": null
+              },
+              {
+                "key": "I2-7",
+                "label": null
+              },
+              {
+                "key": "I2-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "I2-9",
+                "label": null
+              },
+              {
+                "key": "I2-10",
+                "label": null
+              },
+              {
+                "key": "I2-11",
+                "label": null
+              },
+              {
+                "key": "I2-12",
+                "label": null
+              },
+              {
+                "key": "I2-13",
+                "label": null
+              },
+              {
+                "key": "I2-14",
+                "label": null
+              },
+              {
+                "key": "I2-15",
+                "label": null
+              },
+              {
+                "key": "I2-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu I3",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "I3-1",
+                "label": null
+              },
+              {
+                "key": "I3-2",
+                "label": null
+              },
+              {
+                "key": "I3-3",
+                "label": null
+              },
+              {
+                "key": "I3-4",
+                "label": null
+              },
+              {
+                "key": "I3-5",
+                "label": null
+              },
+              {
+                "key": "I3-6",
+                "label": null
+              },
+              {
+                "key": "I3-7",
+                "label": null
+              },
+              {
+                "key": "I3-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "I3-9",
+                "label": null
+              },
+              {
+                "key": "I3-10",
+                "label": null
+              },
+              {
+                "key": "I3-11",
+                "label": null
+              },
+              {
+                "key": "I3-12",
+                "label": null
+              },
+              {
+                "key": "I3-13",
+                "label": null
+              },
+              {
+                "key": "I3-14",
+                "label": null
+              },
+              {
+                "key": "I3-15",
+                "label": null
+              },
+              {
+                "key": "I3-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu I4",
+        "tiers": [
+          {
+            "name": "SỌT ĐỂ LẤY HÀNG",
+            "bins": [
+              {
+                "key": "I4-1",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "I4-2",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "I4-3",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "I4-4",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "I4-5",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "I4-6",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "I4-7",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "I4-8",
+                "label": "SỌT LẤY HÀNG"
+              }
+            ],
+            "colorHex": "FF1976D2"
+          }
+        ]
+      }
+    ],
+    "K": [
+      {
+        "name": "Khu K1",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "K1-1",
+                "label": null
+              },
+              {
+                "key": "K1-2",
+                "label": null
+              },
+              {
+                "key": "K1-3",
+                "label": null
+              },
+              {
+                "key": "K1-4",
+                "label": null
+              },
+              {
+                "key": "K1-5",
+                "label": null
+              },
+              {
+                "key": "K1-6",
+                "label": null
+              },
+              {
+                "key": "K1-7",
+                "label": null
+              },
+              {
+                "key": "K1-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "K1-9",
+                "label": null
+              },
+              {
+                "key": "K1-10",
+                "label": null
+              },
+              {
+                "key": "K1-11",
+                "label": null
+              },
+              {
+                "key": "K1-12",
+                "label": null
+              },
+              {
+                "key": "K1-13",
+                "label": null
+              },
+              {
+                "key": "K1-14",
+                "label": null
+              },
+              {
+                "key": "K1-15",
+                "label": null
+              },
+              {
+                "key": "K1-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu K2",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "K2-1",
+                "label": null
+              },
+              {
+                "key": "K2-2",
+                "label": null
+              },
+              {
+                "key": "K2-3",
+                "label": null
+              },
+              {
+                "key": "K2-4",
+                "label": null
+              },
+              {
+                "key": "K2-5",
+                "label": null
+              },
+              {
+                "key": "K2-6",
+                "label": null
+              },
+              {
+                "key": "K2-7",
+                "label": null
+              },
+              {
+                "key": "K2-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "K2-9",
+                "label": null
+              },
+              {
+                "key": "K2-10",
+                "label": null
+              },
+              {
+                "key": "K2-11",
+                "label": null
+              },
+              {
+                "key": "K2-12",
+                "label": null
+              },
+              {
+                "key": "K2-13",
+                "label": null
+              },
+              {
+                "key": "K2-14",
+                "label": null
+              },
+              {
+                "key": "K2-15",
+                "label": null
+              },
+              {
+                "key": "K2-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu K3",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "K3-1",
+                "label": null
+              },
+              {
+                "key": "K3-2",
+                "label": null
+              },
+              {
+                "key": "K3-3",
+                "label": null
+              },
+              {
+                "key": "K3-4",
+                "label": null
+              },
+              {
+                "key": "K3-5",
+                "label": null
+              },
+              {
+                "key": "K3-6",
+                "label": null
+              },
+              {
+                "key": "K3-7",
+                "label": null
+              },
+              {
+                "key": "K3-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "K3-9",
+                "label": null
+              },
+              {
+                "key": "K3-10",
+                "label": null
+              },
+              {
+                "key": "K3-11",
+                "label": null
+              },
+              {
+                "key": "K3-12",
+                "label": null
+              },
+              {
+                "key": "K3-13",
+                "label": null
+              },
+              {
+                "key": "K3-14",
+                "label": null
+              },
+              {
+                "key": "K3-15",
+                "label": null
+              },
+              {
+                "key": "K3-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu K4",
+        "tiers": [
+          {
+            "name": "SỌT ĐỂ LẤY HÀNG",
+            "bins": [
+              {
+                "key": "K4-1",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "K4-2",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "K4-3",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "K4-4",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "K4-5",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "K4-6",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "K4-7",
+                "label": "SỌT LẤY HÀNG"
+              },
+              {
+                "key": "K4-8",
+                "label": "SỌT LẤY HÀNG"
+              }
+            ],
+            "colorHex": "FF1976D2"
+          }
+        ]
+      }
+    ],
+    "A": [
+      {
+        "name": "Khu A1",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "A1-1",
+                "label": null
+              },
+              {
+                "key": "A1-2",
+                "label": null
+              },
+              {
+                "key": "A1-3",
+                "label": null
+              },
+              {
+                "key": "A1-4",
+                "label": null
+              },
+              {
+                "key": "A1-5",
+                "label": null
+              },
+              {
+                "key": "A1-6",
+                "label": null
+              },
+              {
+                "key": "A1-7",
+                "label": null
+              },
+              {
+                "key": "A1-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "A1-9",
+                "label": null
+              },
+              {
+                "key": "A1-10",
+                "label": null
+              },
+              {
+                "key": "A1-11",
+                "label": null
+              },
+              {
+                "key": "A1-12",
+                "label": null
+              },
+              {
+                "key": "A1-13",
+                "label": null
+              },
+              {
+                "key": "A1-14",
+                "label": null
+              },
+              {
+                "key": "A1-15",
+                "label": null
+              },
+              {
+                "key": "A1-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu A2",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "A2-1",
+                "label": null
+              },
+              {
+                "key": "A2-2",
+                "label": null
+              },
+              {
+                "key": "A2-3",
+                "label": null
+              },
+              {
+                "key": "A2-4",
+                "label": null
+              },
+              {
+                "key": "A2-5",
+                "label": null
+              },
+              {
+                "key": "A2-6",
+                "label": null
+              },
+              {
+                "key": "A2-7",
+                "label": null
+              },
+              {
+                "key": "A2-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "A2-9",
+                "label": null
+              },
+              {
+                "key": "A2-10",
+                "label": null
+              },
+              {
+                "key": "A2-11",
+                "label": null
+              },
+              {
+                "key": "A2-12",
+                "label": null
+              },
+              {
+                "key": "A2-13",
+                "label": null
+              },
+              {
+                "key": "A2-14",
+                "label": null
+              },
+              {
+                "key": "A2-15",
+                "label": null
+              },
+              {
+                "key": "A2-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      },
+      {
+        "name": "Khu A3",
+        "tiers": [
+          {
+            "name": "TẦNG TRÊN (1-8)",
+            "bins": [
+              {
+                "key": "A3-1",
+                "label": null
+              },
+              {
+                "key": "A3-2",
+                "label": null
+              },
+              {
+                "key": "A3-3",
+                "label": null
+              },
+              {
+                "key": "A3-4",
+                "label": null
+              },
+              {
+                "key": "A3-5",
+                "label": null
+              },
+              {
+                "key": "A3-6",
+                "label": null
+              },
+              {
+                "key": "A3-7",
+                "label": null
+              },
+              {
+                "key": "A3-8",
+                "label": null
+              }
+            ],
+            "colorHex": "FF1976D2"
+          },
+          {
+            "name": "TẦNG DƯỚI (9-16)",
+            "bins": [
+              {
+                "key": "A3-9",
+                "label": null
+              },
+              {
+                "key": "A3-10",
+                "label": null
+              },
+              {
+                "key": "A3-11",
+                "label": null
+              },
+              {
+                "key": "A3-12",
+                "label": null
+              },
+              {
+                "key": "A3-13",
+                "label": null
+              },
+              {
+                "key": "A3-14",
+                "label": null
+              },
+              {
+                "key": "A3-15",
+                "label": null
+              },
+              {
+                "key": "A3-16",
+                "label": null
+              }
+            ],
+            "colorHex": "FFF57C00"
+          }
+        ]
+      }
+    ]
+  }
+}
