@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:inventor/providers/auth_provider.dart';
 import 'package:inventor/providers/notification_provider.dart';
 import 'package:inventor/services/api_service.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'edit_product_screen.dart';
 
 // --- Models for Customizable Layout ---
@@ -743,10 +745,14 @@ class _WarehouseLayoutScreenState extends State<WarehouseLayoutScreen> {
 
   Widget _buildMainLayout() {
     final sectors = _layoutData[_selectedAisle] ?? [];
+    final bool isAndroid = !kIsWeb && Platform.isAndroid;
+
     return InteractiveViewer(
       boundaryMargin: const EdgeInsets.all(50),
-      minScale: 0.01,
-      maxScale: 3.0,
+      minScale: isAndroid ? 0.01 : 1.0,
+      maxScale: isAndroid ? 3.0 : 1.0,
+      scaleEnabled:
+          isAndroid, // Completely disable scale interaction on non-Android
       constrained: false, // Allows the content to expand beyond the viewport
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -1294,11 +1300,7 @@ class _WarehouseLayoutScreenState extends State<WarehouseLayoutScreen> {
                   ),
                   child: const Text(
                     'ĐÓNG',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 2,
-                    ),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),

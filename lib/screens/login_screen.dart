@@ -142,8 +142,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      // Server address hidden as requested
                     ],
                   ),
                 ),
@@ -154,6 +152,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  // _showIpSettings removed as it is no longer used
 }
