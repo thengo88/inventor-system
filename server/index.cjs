@@ -3274,6 +3274,19 @@ io.on('connection', (socket) => {
     console.log('Client connected to socket');
 });
 
+// Keep-alive mechanism for Render Free Tier (Self-Ping)
+const keepAliveUrl = 'https://inventor-server.onrender.com';
+if (process.env.NODE_ENV === 'production') {
+    console.log(`[Keep-Alive] Self-ping initialized for: ${keepAliveUrl}`);
+    setInterval(() => {
+        https.get(keepAliveUrl, (res) => {
+            console.log(`[Keep-Alive] Ping successful: ${res.statusCode}`);
+        }).on('error', (err) => {
+            console.error('[Keep-Alive] Ping failed:', err.message);
+        });
+    }, 14 * 60 * 1000); // 14 minutes (Render sleeps after 15)
+}
+
 const localIp = getLocalIp();
 console.log('-------------------------------------------');
 console.log(`🚀 Server đang sẵn sàng:`);
@@ -3282,3 +3295,4 @@ if (sslOptions) {
     console.log(`- Web HTTPS: https://${localIp}:3443`);
 }
 console.log('-------------------------------------------');
+
