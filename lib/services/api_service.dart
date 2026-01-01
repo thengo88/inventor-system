@@ -576,50 +576,53 @@ class ApiService {
     }
   }
 
-  Future<List<String>?> getExcelSheets(File file) async {
+  Future<List<String>?> getExcelSheets(dynamic file) async {
     try {
-      print('[ApiService] Getting sheets from: $baseUrl/picking/sheets');
-      print('[ApiService] File path: ${file.path}');
-
       var request = http.MultipartRequest(
         'POST',
         Uri.parse('$baseUrl/picking/sheets'),
       );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'file',
-          file.path,
-          contentType: MediaType(
-            'application',
-            'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+
+      if (kIsWeb) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            file as List<int>,
+            filename: 'upload.xlsx',
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            (file as File).path,
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
+          ),
+        );
+      }
 
-      print('[ApiService] Sending request...');
       var response = await request.send();
-      print('[ApiService] Response status: ${response.statusCode}');
-
       if (response.statusCode == 200) {
         final respStr = await response.stream.bytesToString();
-        print('[ApiService] Response body: $respStr');
         final data = jsonDecode(respStr);
-        final sheets = List<String>.from(data['sheets'] ?? []);
-        print('[ApiService] Parsed sheets: $sheets');
-        return sheets;
-      } else {
-        final respStr = await response.stream.bytesToString();
-        print('[ApiService] Error response: $respStr');
+        return List<String>.from(data['sheets'] ?? []);
       }
       return null;
     } catch (e) {
-      print('[ApiService] Get Excel sheets error: $e');
+      print('Get Excel sheets error: $e');
       return null;
     }
   }
 
   Future<List<String>?> getExcelDates(
-    File file, {
+    dynamic file, {
     String? selectedSheet,
   }) async {
     try {
@@ -627,16 +630,32 @@ class ApiService {
         'POST',
         Uri.parse('$baseUrl/picking/dates'),
       );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'file',
-          file.path,
-          contentType: MediaType(
-            'application',
-            'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+
+      if (kIsWeb) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            file as List<int>,
+            filename: 'upload.xlsx',
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            (file as File).path,
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
+          ),
+        );
+      }
+
       if (selectedSheet != null) {
         request.fields['selectedSheet'] = selectedSheet;
       }
@@ -655,7 +674,7 @@ class ApiService {
   }
 
   Future<List<String>?> getExcelHeaders(
-    File file, {
+    dynamic file, {
     String? selectedSheet,
   }) async {
     try {
@@ -663,16 +682,32 @@ class ApiService {
         'POST',
         Uri.parse('$baseUrl/picking/headers'),
       );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'file',
-          file.path,
-          contentType: MediaType(
-            'application',
-            'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+
+      if (kIsWeb) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            file as List<int>,
+            filename: 'upload.xlsx',
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            (file as File).path,
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
+          ),
+        );
+      }
+
       if (selectedSheet != null) {
         request.fields['selectedSheet'] = selectedSheet;
       }
@@ -693,7 +728,7 @@ class ApiService {
   Future<Map<String, dynamic>?> importExcelPickingList(
     String orderNumber,
     String customer,
-    File file, {
+    dynamic file, {
     String? selectedSheet,
     String? selectedDate,
     Map<String, String>? columnMapping,
@@ -714,16 +749,31 @@ class ApiService {
       if (columnMapping != null) {
         request.fields['columnMapping'] = jsonEncode(columnMapping);
       }
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'file',
-          file.path,
-          contentType: MediaType(
-            'application',
-            'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+
+      if (kIsWeb) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            file as List<int>,
+            filename: 'upload.xlsx',
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            (file as File).path,
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
+          ),
+        );
+      }
 
       var response = await request.send();
       if (response.statusCode == 200) {

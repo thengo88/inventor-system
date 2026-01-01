@@ -12,15 +12,77 @@ const turso = createClient({
 class TursoWrapper {
     constructor(client) {
         this.client = client;
+        this.currentTransaction = null; // Initialize transaction state
     }
 
-    async run(sql, params, callback) {
-        if (typeof params === 'function') {
-            callback = params;
-            params = [];
+    async run(sql, ...args) {
+        let callback = null;
+        let params = [];
+
+        if (args.length > 0 && typeof args[args.length - 1] === 'function') {
+            callback = args.pop();
         }
+
+        if (args.length === 1 && Array.isArray(args[0])) {
+            params = args[0];
+        } else {
+            params = args;
+        }
+
+        const sqlUpper = sql.trim().toUpperCase();
+
+        // Handle Transactions
+        if (sqlUpper.startsWith('BEGIN')) {
+            try {
+                if (this.currentTransaction) {
+                    console.warn('[Turso] Transaction already in progress, nested BEGIN ignored.');
+                } else {
+                    this.currentTransaction = await this.client.transaction();
+                }
+                if (callback) callback.call({ changes: 0 }, null);
+                return { changes: 0 };
+            } catch (error) {
+                console.error('Turso BEGIN error:', error);
+                if (callback) callback(error);
+                throw error;
+            }
+        }
+
+        if (sqlUpper.startsWith('COMMIT')) {
+            try {
+                if (this.currentTransaction) {
+                    await this.currentTransaction.commit();
+                    this.currentTransaction = null;
+                }
+                if (callback) callback.call({ changes: 0 }, null);
+                return { changes: 0 };
+            } catch (error) {
+                console.error('Turso COMMIT error:', error);
+                if (callback) callback(error);
+                throw error;
+            }
+        }
+
+        if (sqlUpper.startsWith('ROLLBACK')) {
+            try {
+                if (this.currentTransaction) {
+                    await this.currentTransaction.rollback();
+                    this.currentTransaction = null;
+                }
+                if (callback) callback.call({ changes: 0 }, null);
+                return { changes: 0 };
+            } catch (error) {
+                // Rollback might fail if already failed, ignore
+                this.currentTransaction = null;
+                if (callback) callback(null);
+                return { changes: 0 };
+            }
+        }
+
+        const executor = this.currentTransaction || this.client;
+
         try {
-            const result = await this.client.execute({
+            const result = await executor.execute({
                 sql: sql,
                 args: params || [],
             });
@@ -46,19 +108,30 @@ class TursoWrapper {
             console.error('Turso run error:', error);
             if (callback) {
                 callback(error);
-                return null; // Return resolved promise to avoid unhandled rejection
+                return null;
             }
             throw error;
         }
     }
 
-    async get(sql, params, callback) {
-        if (typeof params === 'function') {
-            callback = params;
-            params = [];
+    async get(sql, ...args) {
+        let callback = null;
+        let params = [];
+
+        if (args.length > 0 && typeof args[args.length - 1] === 'function') {
+            callback = args.pop();
         }
+
+        if (args.length === 1 && Array.isArray(args[0])) {
+            params = args[0];
+        } else {
+            params = args;
+        }
+
+        const executor = this.currentTransaction || this.client;
+
         try {
-            const result = await this.client.execute({
+            const result = await executor.execute({
                 sql: sql,
                 args: params || [],
             });
@@ -75,13 +148,24 @@ class TursoWrapper {
         }
     }
 
-    async all(sql, params, callback) {
-        if (typeof params === 'function') {
-            callback = params;
-            params = [];
+    async all(sql, ...args) {
+        let callback = null;
+        let params = [];
+
+        if (args.length > 0 && typeof args[args.length - 1] === 'function') {
+            callback = args.pop();
         }
+
+        if (args.length === 1 && Array.isArray(args[0])) {
+            params = args[0];
+        } else {
+            params = args;
+        }
+
+        const executor = this.currentTransaction || this.client;
+
         try {
-            const result = await this.client.execute({
+            const result = await executor.execute({
                 sql: sql,
                 args: params || [],
             });
@@ -122,7 +206,7 @@ class TursoWrapper {
     prepare(sql) {
         // Simple mock for prepare
         return {
-            run: (params, callback) => this.run(sql, params, callback),
+            run: (...args) => this.run(sql, ...args),
             finalize: () => { }
         };
     }
@@ -133,5 +217,6 @@ class TursoWrapper {
 }
 
 const db = new TursoWrapper(turso);
+db.currentTransaction = null;
 
 module.exports = db;

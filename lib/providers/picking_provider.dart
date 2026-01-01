@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/picking_list.dart';
 import '../services/api_service.dart';
@@ -104,7 +103,7 @@ class PickingProvider with ChangeNotifier {
   }
 
   Future<List<String>?> getExcelHeaders(
-    File file, {
+    dynamic file, {
     String? selectedSheet,
   }) async {
     return await _apiService.getExcelHeaders(
@@ -116,7 +115,7 @@ class PickingProvider with ChangeNotifier {
   Future<Map<String, dynamic>?> importFromExcel(
     String orderNum,
     String customer,
-    File file, {
+    dynamic file, {
     String? selectedSheet,
     String? selectedDate,
     Map<String, String>? columnMapping,

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../providers/picking_provider.dart';
 import '../providers/product_provider.dart';
@@ -20,7 +21,8 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
   final _orderController = TextEditingController();
   final _customerController = TextEditingController();
 
-  File? _excelFile;
+  dynamic _excelFileData; // File (Mobile) or List<int> (Web)
+  String? _fileName;
   final List<Map<String, dynamic>> _manualItems = [];
   bool _isExcelMode = true;
   bool _isSaving = false;
@@ -171,9 +173,7 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  _excelFile == null
-                      ? 'Chọn file Excel (.xlsx)'
-                      : _excelFile!.path.split('\\').last,
+                  _fileName == null ? 'Chọn file Excel (.xlsx)' : _fileName!,
                   style: TextStyle(color: Colors.blue[700]),
                 ),
               ],
@@ -254,7 +254,7 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
                 fontStyle: FontStyle.italic,
               ),
             ),
-          ] else if (_excelFile != null && !_isLoadingDates) ...[
+          ] else if (_excelFileData != null && !_isLoadingDates) ...[
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(8),
@@ -283,7 +283,7 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
               fontStyle: FontStyle.italic,
             ),
           ),
-        ] else if (_excelFile != null && !_isLoadingSheets) ...[
+        ] else if (_excelFileData != null && !_isLoadingSheets) ...[
           const SizedBox(height: 24),
           Container(
             padding: const EdgeInsets.all(12),
@@ -313,7 +313,7 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
   }
 
   Future<void> _loadDates() async {
-    if (_excelFile == null || _selectedSheet == null) return;
+    if (_excelFileData == null || _selectedSheet == null) return;
 
     setState(() {
       _isLoadingDates = true;
@@ -325,7 +325,7 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
       final dates = await context
           .read<PickingProvider>()
           .apiService
-          .getExcelDates(_excelFile!, selectedSheet: _selectedSheet);
+          .getExcelDates(_excelFileData, selectedSheet: _selectedSheet);
 
       if (mounted) {
         setState(() {
@@ -408,44 +408,46 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.any,
+      withData: kIsWeb, // Important for Web
     );
 
     if (result != null) {
-      print('File selected: ${result.files.single.path}');
-      setState(() {
-        _excelFile = File(result.files.single.path!);
-        _isLoadingSheets = true;
-        _availableSheets = [];
-        _selectedSheet = null;
-      });
+      if (kIsWeb) {
+        setState(() {
+          _excelFileData = result.files.single.bytes;
+          _fileName = result.files.single.name;
+          _isLoadingSheets = true;
+          _availableSheets = [];
+          _selectedSheet = null;
+        });
+      } else {
+        setState(() {
+          _excelFileData = File(result.files.single.path!);
+          _fileName = result.files.single.name;
+          _isLoadingSheets = true;
+          _availableSheets = [];
+          _selectedSheet = null;
+        });
+      }
 
       try {
-        print('Loading sheets from file...');
-        // Load available sheets
         final sheets = await context
             .read<PickingProvider>()
             .apiService
-            .getExcelSheets(_excelFile!);
-        print('Sheets loaded: $sheets');
+            .getExcelSheets(_excelFileData);
 
         if (mounted) {
           setState(() {
             _isLoadingSheets = false;
             if (sheets != null && sheets.isNotEmpty) {
               _availableSheets = sheets;
-              _selectedSheet = sheets.first; // Auto-select first sheet
-              print(
-                'Available sheets set: $_availableSheets, Selected: $_selectedSheet',
-              );
-              _loadDates(); // Also load dates for the first sheet
-              _loadHeaders(); // Load headers for mapping
-            } else {
-              print('No sheets found or sheets is null');
+              _selectedSheet = sheets.first;
+              _loadDates();
+              _loadHeaders();
             }
           });
         }
       } catch (e) {
-        print('Error loading sheets: $e');
         if (mounted) {
           setState(() {
             _isLoadingSheets = false;
@@ -462,7 +464,7 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
     setState(() => _isSaving = true);
 
     if (_isExcelMode) {
-      if (_excelFile == null) {
+      if (_excelFileData == null) {
         _showMessage('Vui lòng chọn file Excel');
         setState(() => _isSaving = false);
         return;
@@ -471,7 +473,7 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
       final result = await context.read<PickingProvider>().importFromExcel(
         _orderController.text,
         _customerController.text,
-        _excelFile!,
+        _excelFileData,
         selectedSheet: _selectedSheet,
         selectedDate: _selectedDate,
         columnMapping: _columnMapping.isEmpty ? null : _columnMapping,
@@ -737,7 +739,7 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
   }
 
   Future<void> _loadHeaders() async {
-    if (_excelFile == null) return;
+    if (_excelFileData == null) return;
     // Don't require sheet selected if only one sheet exists, but typically API handles default.
     // _selectedSheet might be null if auto-selected first sheet in background.
 
@@ -749,7 +751,7 @@ class _CreatePickingScreenState extends State<CreatePickingScreen> {
 
     try {
       final headers = await context.read<PickingProvider>().getExcelHeaders(
-        _excelFile!,
+        _excelFileData!,
         selectedSheet: _selectedSheet,
       );
 
