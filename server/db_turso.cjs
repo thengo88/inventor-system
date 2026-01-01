@@ -31,8 +31,22 @@ class TursoWrapper {
             if (callback) callback.call(info, null);
             return info;
         } catch (error) {
+            // Ignore common migration errors that happen when columns/tables already exist
+            const isMigrationError = error.message.includes('duplicate column name') ||
+                error.message.includes('already exists') ||
+                error.message.includes('duplicate column');
+
+            if (isMigrationError) {
+                console.warn(`[Turso Migration Note] ${error.message} (Safe to ignore)`);
+                if (callback) callback(null); // Call with null error to continue flow
+                return { changes: 0, lastID: null };
+            }
+
             console.error('Turso run error:', error);
-            if (callback) callback(error);
+            if (callback) {
+                callback(error);
+                return; // Don't throw if callback is handled
+            }
             throw error;
         }
     }
@@ -52,7 +66,10 @@ class TursoWrapper {
             return row;
         } catch (error) {
             console.error('Turso get error:', error);
-            if (callback) callback(error);
+            if (callback) {
+                callback(error);
+                return;
+            }
             throw error;
         }
     }
@@ -72,7 +89,10 @@ class TursoWrapper {
             return rows;
         } catch (error) {
             console.error('Turso all error:', error);
-            if (callback) callback(error);
+            if (callback) {
+                callback(error);
+                return;
+            }
             throw error;
         }
     }
