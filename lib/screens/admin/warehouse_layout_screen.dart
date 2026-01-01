@@ -747,25 +747,48 @@ class _WarehouseLayoutScreenState extends State<WarehouseLayoutScreen> {
     final sectors = _layoutData[_selectedAisle] ?? [];
     final bool isAndroid = !kIsWeb && Platform.isAndroid;
 
-    return InteractiveViewer(
-      boundaryMargin: const EdgeInsets.all(50),
-      minScale: isAndroid ? 0.01 : 1.0,
-      maxScale: isAndroid ? 3.0 : 1.0,
-      scaleEnabled:
-          isAndroid, // Completely disable scale interaction on non-Android
-      constrained: false, // Allows the content to expand beyond the viewport
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...sectors.map((s) => _buildSectorColumn(s)),
-            if (_isEditMode)
-              _buildAddButton('THÊM KHU', _addSector, height: 100, width: 280),
-          ],
-        ),
+    Widget content = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...sectors.map((s) => _buildSectorColumn(s)),
+          if (_isEditMode)
+            _buildAddButton('THÊM KHU', _addSector, height: 100, width: 280),
+        ],
       ),
     );
+
+    if (isAndroid) {
+      return InteractiveViewer(
+        boundaryMargin: const EdgeInsets.all(50),
+        minScale: 0.01,
+        maxScale: 3.0,
+        scaleEnabled: true,
+        constrained: false,
+        child: content,
+      );
+    } else {
+      // Desktop/Web: Use standard scrollbars and mouse wheel support
+      return Scrollbar(
+        thumbVisibility: true,
+        thickness: 8,
+        radius: const Radius.circular(4),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Scrollbar(
+            thumbVisibility: true,
+            thickness: 8,
+            radius: const Radius.circular(4),
+            notificationPredicate: (notif) => notif.depth == 1,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: content,
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   Widget _buildSectorColumn(SectorConfig sector) {
