@@ -158,9 +158,24 @@ const upload = multer({ storage });
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Serve Flutter Web (same UI as Android app)
-// Serve Flutter Web App (UI matches Mobile App)
+// Serve static files from both potential public folders
 app.use(express.static(path.join(__dirname, 'public_flutter')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Explicit route for root to ensure it serves index.html
+app.get('/', (req, res) => {
+    const flutterIndex = path.join(__dirname, 'public_flutter', 'index.html');
+    const publicIndex = path.join(__dirname, 'public', 'index.html');
+
+    if (fs.existsSync(flutterIndex)) {
+        res.sendFile(flutterIndex);
+    } else if (fs.existsSync(publicIndex)) {
+        res.sendFile(publicIndex);
+    } else {
+        res.status(404).send('Index file not found in public_flutter or public. Please check your deployment build artifacts.');
+    }
+});
+
 
 
 
@@ -3236,6 +3251,22 @@ app.post('/api/notifications/hide', (req, res) => {
             });
         }
     });
+});
+
+// Catch-all route for Flutter SPA (Single Page Application)
+// This must be the LAST route defined to avoid overriding API routes
+app.get('*', (req, res) => {
+    const flutterIndex = path.join(__dirname, 'public_flutter', 'index.html');
+    if (fs.existsSync(flutterIndex)) {
+        res.sendFile(flutterIndex);
+    } else {
+        // If not an API route and index.html doesn't exist, return 404
+        if (!req.path.startsWith('/api/')) {
+            res.status(404).send('Page not found. If this is a new deployment, please ensure build artifacts are correctly placed.');
+        } else {
+            res.status(404).json({ error: 'API route not found' });
+        }
+    }
 });
 
 // Socket.io connection
