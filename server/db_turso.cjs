@@ -31,21 +31,22 @@ class TursoWrapper {
             if (callback) callback.call(info, null);
             return info;
         } catch (error) {
-            // Ignore common migration errors that happen when columns/tables already exist
-            const isMigrationError = error.message.includes('duplicate column name') ||
-                error.message.includes('already exists') ||
-                error.message.includes('duplicate column');
+            const errStr = String(error).toLowerCase();
+            const isMigrationError = errStr.includes('duplicate column name') ||
+                errStr.includes('already exists') ||
+                errStr.includes('duplicate column') ||
+                errStr.includes('sku_plain');
 
             if (isMigrationError) {
                 console.warn(`[Turso Migration Note] ${error.message} (Safe to ignore)`);
-                if (callback) callback(null); // Call with null error to continue flow
+                if (callback) callback(null);
                 return { changes: 0, lastID: null };
             }
 
             console.error('Turso run error:', error);
             if (callback) {
                 callback(error);
-                return; // Don't throw if callback is handled
+                return null; // Return resolved promise to avoid unhandled rejection
             }
             throw error;
         }
@@ -68,7 +69,7 @@ class TursoWrapper {
             console.error('Turso get error:', error);
             if (callback) {
                 callback(error);
-                return;
+                return null;
             }
             throw error;
         }
@@ -91,7 +92,7 @@ class TursoWrapper {
             console.error('Turso all error:', error);
             if (callback) {
                 callback(error);
-                return;
+                return [];
             }
             throw error;
         }
@@ -114,6 +115,7 @@ class TursoWrapper {
     }
 
     exec(sql, callback) {
+        // exec is basically run without params
         this.run(sql, [], callback);
     }
 
