@@ -72,19 +72,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.settings_outlined,
-                              color: Colors.grey,
-                            ),
-                            onPressed: _showIpSettings,
-                            tooltip: 'Cài đặt Server IP',
-                          ),
-                        ],
-                      ),
+                      // Settings icon hidden as requested
+                      const SizedBox(height: 16),
                       Container(
                         width: 120,
                         height: 120,
@@ -156,15 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Consumer<ProductProvider>(
-                        builder: (context, provider, _) => Text(
-                          'Server: ${provider.getServerIpAddress()}',
-                          style: TextStyle(
-                            color: Colors.grey[400],
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
+                      // Server address hidden as requested
                     ],
                   ),
                 ),
@@ -176,57 +157,5 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _showIpSettings() {
-    final provider = context.read<ProductProvider>();
-    final ipController = TextEditingController(
-      text: provider.getServerIpAddress(),
-    );
-
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Cấu hình Server IP'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Nhập địa chỉ URL hoặc IP Server (Ví dụ: https://inventor-server.onrender.com)',
-              style: TextStyle(fontSize: 13),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: ipController,
-              decoration: const InputDecoration(
-                labelText: 'Địa chỉ Server',
-                border: OutlineInputBorder(),
-                hintText: 'https://...',
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Hủy'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final newIp = ipController.text.trim();
-              if (newIp.isNotEmpty) {
-                await ApiService().updateIp(newIp);
-                if (mounted) {
-                  setState(() {}); // Refresh login screen UI
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Đã cập nhật Server IP: $newIp')),
-                  );
-                }
-              }
-            },
-            child: const Text('Lưu'),
-          ),
-        ],
-      ),
-    );
-  }
+  // _showIpSettings removed as it is no longer used
 }
