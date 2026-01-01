@@ -190,18 +190,17 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'Nhập địa chỉ IP của máy tính chạy server (Ví dụ: 192.168.1.13)',
+              'Nhập địa chỉ URL hoặc IP Server (Ví dụ: https://inventor-server.onrender.com)',
               style: TextStyle(fontSize: 13),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: ipController,
               decoration: const InputDecoration(
-                labelText: 'Địa chỉ IP',
+                labelText: 'Địa chỉ Server',
                 border: OutlineInputBorder(),
-                hintText: '192.168.x.x',
+                hintText: 'https://...',
               ),
-              keyboardType: TextInputType.number,
             ),
           ],
         ),

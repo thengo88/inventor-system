@@ -20,12 +20,14 @@ class ApiService {
     return sku.toString().replaceAll('-', '').trim().toUpperCase();
   }
 
-  String _currentIp = '192.168.1.13'; // Default fallback
+  String _currentIp =
+      'https://inventor-server.onrender.com'; // Default Render URL
   IO.Socket? socket;
 
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    _currentIp = prefs.getString('server_ip') ?? '192.168.1.13';
+    _currentIp =
+        prefs.getString('server_ip') ?? 'https://inventor-server.onrender.com';
     _initSocket();
   }
 
