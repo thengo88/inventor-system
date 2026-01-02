@@ -100,7 +100,7 @@ class TursoWrapper {
                 errStr.includes('sku_plain');
 
             if (isMigrationError) {
-                console.warn(`[Turso Migration Note] ${error.message} (Safe to ignore)`);
+                // Silently ignore migration errors (duplicate columns expected on restart)
                 if (callback) callback(null);
                 return { changes: 0, lastID: null };
             }
