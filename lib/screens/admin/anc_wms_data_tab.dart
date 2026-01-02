@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/api_service.dart';
 import '../../providers/product_provider.dart';
+import '../../widgets/global_data_sync.dart';
+import 'dart:async';
 
 class AncWmsDataTab extends StatefulWidget {
   const AncWmsDataTab({super.key});
@@ -16,13 +18,15 @@ class AncWmsDataTab extends StatefulWidget {
   State<AncWmsDataTab> createState() => _AncWmsDataTabState();
 }
 
-class _AncWmsDataTabState extends State<AncWmsDataTab> {
+class _AncWmsDataTabState extends State<AncWmsDataTab>
+    with WidgetsBindingObserver {
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
   List<dynamic> _mergedData = [];
   String _searchQuery = "";
   String _selectedWarehouse = "Tất cả";
   List<String> _warehouses = ["Tất cả"];
+  StreamSubscription? _refreshSub;
 
   final ScrollController _horizontalController = ScrollController();
   final ScrollController _headerHorizontalController = ScrollController();
@@ -65,6 +69,17 @@ class _AncWmsDataTabState extends State<AncWmsDataTab> {
         _isSyncingScroll = true;
         _fixedVerticalController.jumpTo(_scrollableVerticalController.offset);
         _isSyncingScroll = false;
+      }
+    });
+
+    WidgetsBinding.instance.addObserver(this);
+    _refreshSub = GlobalDataSync.onRefresh.listen((category) {
+      if (mounted &&
+          (category.contains('erp') ||
+              category.contains('product') ||
+              category.contains('audit') ||
+              category == 'general')) {
+        _loadData();
       }
     });
 
@@ -193,7 +208,16 @@ class _AncWmsDataTabState extends State<AncWmsDataTab> {
     _headerHorizontalController.dispose();
     _fixedVerticalController.dispose();
     _scrollableVerticalController.dispose();
+    _refreshSub?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadData();
+    }
   }
 
   Future<void> _loadWarehouses() async {

@@ -82,7 +82,10 @@ class _ErpDataTabState extends State<ErpDataTab>
 
     // Listen for real-time updates via GlobalDataSync
     _refreshSub = GlobalDataSync.onRefresh.listen((category) {
-      if (mounted && (category.contains('erp') || category == 'general')) {
+      if (mounted &&
+          (category.contains('erp') ||
+              category.contains('audit') ||
+              category == 'general')) {
         _loadLocalData();
       }
     });
