@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
@@ -9,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../mixins/optimized_operations.dart';
-import '../../services/api_service_optimized.dart';
+
 import '../../widgets/global_data_sync.dart';
 import 'dart:async';
 
@@ -426,13 +427,19 @@ class _ErpDataTabState extends State<ErpDataTab>
       type: FileType.custom,
       allowedExtensions: ['xlsx', 'xls'],
     );
-    if (result != null && result.files.single.path != null) {
+    if (result != null) {
       setState(() => _isLoading = true);
       try {
+        dynamic file;
+        if (kIsWeb) {
+          file = result.files.single.bytes;
+        } else {
+          file = File(result.files.single.path!);
+        }
+
         final res = await _apiService.uploadErpExcel(
-          File(result.files.single.path!),
-          // warehouse: '', // Excel upload might parse warehouse
-          '', // Pass empty or let user input extra param? For now empty default.
+          file,
+          '', // Warehouse
         );
         if (res != null) {
           if (mounted) {
@@ -739,12 +746,17 @@ class _ErpDataTabState extends State<ErpDataTab>
       type: FileType.custom,
       allowedExtensions: ['xlsx', 'xls'],
     );
-    if (result != null && result.files.single.path != null) {
+    if (result != null) {
       setState(() => _isLoading = true);
       try {
-        final res = await _apiService.uploadDynamicColumnsExcel(
-          File(result.files.single.path!),
-        );
+        dynamic file;
+        if (kIsWeb) {
+          file = result.files.single.bytes;
+        } else {
+          file = File(result.files.single.path!);
+        }
+
+        final res = await _apiService.uploadDynamicColumnsExcel(file);
         if (mounted) setState(() => _isLoading = false);
 
         if (res != null) {

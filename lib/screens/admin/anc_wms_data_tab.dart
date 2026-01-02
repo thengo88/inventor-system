@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
@@ -360,12 +361,17 @@ class _AncWmsDataTabState extends State<AncWmsDataTab>
       type: FileType.custom,
       allowedExtensions: ['xlsx', 'xls'],
     );
-    if (result != null && result.files.single.path != null) {
+    if (result != null) {
       setState(() => _isLoading = true);
       try {
-        final res = await _apiService.uploadDynamicColumnsExcel(
-          File(result.files.single.path!),
-        );
+        dynamic file;
+        if (kIsWeb) {
+          file = result.files.single.bytes;
+        } else {
+          file = File(result.files.single.path!);
+        }
+
+        final res = await _apiService.uploadDynamicColumnsExcel(file);
         if (res != null) {
           _loadData();
           ScaffoldMessenger.of(context).showSnackBar(

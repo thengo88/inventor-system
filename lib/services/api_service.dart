@@ -930,7 +930,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>?> uploadErpExcel(
-    File file,
+    dynamic file,
     String warehouse,
   ) async {
     try {
@@ -939,16 +939,31 @@ class ApiService {
         Uri.parse('$baseUrl/erp/import'),
       );
       request.fields['warehouse'] = warehouse;
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'file',
-          file.path,
-          contentType: MediaType(
-            'application',
-            'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+
+      if (kIsWeb) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            file as List<int>,
+            filename: 'upload.xlsx',
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            (file as File).path,
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
+          ),
+        );
+      }
 
       var response = await request.send();
       if (response.statusCode == 200) {
@@ -961,22 +976,37 @@ class ApiService {
     return null;
   }
 
-  Future<Map<String, dynamic>?> uploadDynamicColumnsExcel(File file) async {
+  Future<Map<String, dynamic>?> uploadDynamicColumnsExcel(dynamic file) async {
     try {
       var request = http.MultipartRequest(
         'POST',
         Uri.parse('$baseUrl/erp/import-dynamic'),
       );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'file',
-          file.path,
-          contentType: MediaType(
-            'application',
-            'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+
+      if (kIsWeb) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            file as List<int>,
+            filename: 'upload.xlsx',
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            (file as File).path,
+            contentType: MediaType(
+              'application',
+              'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ),
+          ),
+        );
+      }
 
       print('Uploading Dynamic Excel...');
       var response = await request.send();
