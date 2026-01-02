@@ -13,6 +13,7 @@ import 'package:inventor/services/api_service.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'edit_product_screen.dart';
+import '../../widgets/global_data_sync.dart';
 
 // --- Models for Customizable Layout ---
 
@@ -79,7 +80,8 @@ class WarehouseLayoutScreen extends StatefulWidget {
   State<WarehouseLayoutScreen> createState() => _WarehouseLayoutScreenState();
 }
 
-class _WarehouseLayoutScreenState extends State<WarehouseLayoutScreen> {
+class _WarehouseLayoutScreenState extends State<WarehouseLayoutScreen>
+    with WidgetsBindingObserver {
   // Master Aisle List
   List<String> _aisleList = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K'];
   String _selectedAisle = 'A';
@@ -90,25 +92,39 @@ class _WarehouseLayoutScreenState extends State<WarehouseLayoutScreen> {
   bool _isLoading = true;
   bool _isEditMode = false;
 
-  Timer? _refreshTimer;
+  StreamSubscription? _refreshSub;
   bool _isInit = true;
 
   @override
   void initState() {
     super.initState();
     _loadAllConfig();
-    // Auto-refresh every 2 seconds to ensure real-time data
-    _refreshTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
-      if (mounted) {
-        context.read<ProductProvider>().fetchProducts();
+    WidgetsBinding.instance.addObserver(this);
+
+    // Listen to real-time updates
+    _refreshSub = GlobalDataSync.onRefresh.listen((category) {
+      if (!mounted) return;
+      if (category.contains('product') ||
+          category.contains('erp') ||
+          category == 'general') {
+        // Refresh stock data and config
+        _loadAllConfig(force: true);
       }
     });
   }
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
+    _refreshSub?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadAllConfig(force: true);
+    }
   }
 
   @override

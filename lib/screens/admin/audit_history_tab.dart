@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../services/api_service.dart';
+import '../../widgets/global_data_sync.dart';
+import 'dart:async';
 
 class AuditHistoryTab extends StatefulWidget {
   const AuditHistoryTab({super.key});
@@ -9,11 +11,13 @@ class AuditHistoryTab extends StatefulWidget {
   State<AuditHistoryTab> createState() => _AuditHistoryTabState();
 }
 
-class _AuditHistoryTabState extends State<AuditHistoryTab> {
+class _AuditHistoryTabState extends State<AuditHistoryTab>
+    with WidgetsBindingObserver {
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
   List<dynamic> _historyData = [];
   List<dynamic> _filteredData = [];
+  StreamSubscription? _refreshSub;
   final TextEditingController _auditorFilterController =
       TextEditingController();
   final TextEditingController _skuFilterController = TextEditingController();
@@ -31,6 +35,13 @@ class _AuditHistoryTabState extends State<AuditHistoryTab> {
         _headerHorizontalController.jumpTo(_horizontalController.offset);
       }
     });
+
+    WidgetsBinding.instance.addObserver(this);
+    _refreshSub = GlobalDataSync.onRefresh.listen((category) {
+      if (mounted && (category.contains('audit') || category == 'general')) {
+        _loadHistory();
+      }
+    });
   }
 
   @override
@@ -39,7 +50,16 @@ class _AuditHistoryTabState extends State<AuditHistoryTab> {
     _headerHorizontalController.dispose();
     _auditorFilterController.dispose();
     _skuFilterController.dispose();
+    _refreshSub?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadHistory();
+    }
   }
 
   Future<void> _loadHistory() async {

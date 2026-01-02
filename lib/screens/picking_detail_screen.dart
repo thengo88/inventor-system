@@ -11,6 +11,8 @@ import '../providers/auth_provider.dart';
 import '../models/user.dart';
 import '../widgets/scanner_widgets.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import '../widgets/global_data_sync.dart';
+import 'dart:async';
 
 class PickingDetailScreen extends StatefulWidget {
   final int listId;
@@ -40,15 +42,28 @@ class _PickingDetailScreenState extends State<PickingDetailScreen> {
   int _lastScannedQty = 0;
   bool _isFocusMode = false;
   bool _pendingConfirmation = false;
+  StreamSubscription? _refreshSub;
 
   @override
   void initState() {
     super.initState();
     _loadDetail();
+    _refreshSub = GlobalDataSync.onRefresh.listen((category) {
+      if (category == 'picking') {
+        _loadDetail(silent: true);
+      }
+    });
   }
 
-  Future<void> _loadDetail() async {
-    setState(() => _isLoading = true);
+  @override
+  void dispose() {
+    _refreshSub?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadDetail({bool silent = false}) async {
+    if (!silent) setState(() => _isLoading = true);
     // Refresh user info if not admin to get latest assignments
     final auth = context.read<AuthProvider>();
     if (!auth.isAdmin) {

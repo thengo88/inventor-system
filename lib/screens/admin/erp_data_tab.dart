@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../mixins/optimized_operations.dart';
 import '../../services/api_service_optimized.dart';
+import '../../widgets/global_data_sync.dart';
+import 'dart:async';
 
 class ErpDataTab extends StatefulWidget {
   const ErpDataTab({super.key});
@@ -18,11 +20,13 @@ class ErpDataTab extends StatefulWidget {
   State<ErpDataTab> createState() => _ErpDataTabState();
 }
 
-class _ErpDataTabState extends State<ErpDataTab> with OptimizedOperations {
+class _ErpDataTabState extends State<ErpDataTab>
+    with OptimizedOperations, WidgetsBindingObserver {
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
   List<dynamic> _erpData = [];
   String _searchQuery = "";
+  StreamSubscription? _refreshSub;
   String _selectedWarehouse = "Tất cả";
   List<String> _warehouses = ["Tất cả"];
   String _currentUsername = "";
@@ -76,18 +80,14 @@ class _ErpDataTabState extends State<ErpDataTab> with OptimizedOperations {
       }
     });
 
-    // Listen for real-time updates
-    _apiService.socket?.on('erp_update', (data) {
-      if (mounted) _loadLocalData();
-    });
-
-    _apiService.socket?.on('erp_update_all', (_) {
-      if (mounted) {
-        debugPrint('System: ERP Database reset/refreshed. Reloading data...');
+    // Listen for real-time updates via GlobalDataSync
+    _refreshSub = GlobalDataSync.onRefresh.listen((category) {
+      if (mounted && (category.contains('erp') || category == 'general')) {
         _loadLocalData();
-        _loadWarehouses();
       }
     });
+
+    WidgetsBinding.instance.addObserver(this);
   }
 
   void _initColumns() {
@@ -218,7 +218,16 @@ class _ErpDataTabState extends State<ErpDataTab> with OptimizedOperations {
     _fixedVerticalController.dispose();
     _scrollableVerticalController.dispose();
     // _warehouseController.dispose();
+    _refreshSub?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadLocalData();
+    }
   }
 
   Future<void> _loadWarehouses() async {

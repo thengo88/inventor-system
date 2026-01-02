@@ -8,24 +8,29 @@ import 'create_picking_screen.dart';
 import 'package:intl/intl.dart';
 import '../models/user.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-import '../providers/settings_provider.dart';
+import '../widgets/global_data_sync.dart';
+import 'dart:async';
 
 class PickingScreen extends StatefulWidget {
   const PickingScreen({super.key});
 
   @override
+  @override
   State<PickingScreen> createState() => _PickingScreenState();
 }
 
-class _PickingScreenState extends State<PickingScreen> {
+class _PickingScreenState extends State<PickingScreen>
+    with WidgetsBindingObserver {
   final TextEditingController _recFilterController = TextEditingController();
   final TextEditingController _psFilterController = TextEditingController();
   final TextEditingController _oprFilterController = TextEditingController();
   bool _isFilterExpanded = false;
+  StreamSubscription? _refreshSub;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     Future.microtask(() async {
       final auth = context.read<AuthProvider>();
       if (!auth.isAdmin) {
@@ -37,6 +42,31 @@ class _PickingScreenState extends State<PickingScreen> {
     });
     if (context.read<AuthProvider>().isAdmin) {
       context.read<AuthProvider>().fetchAllUsers();
+    }
+
+    _refreshSub = GlobalDataSync.onRefresh.listen((category) {
+      // Refresh if category is picking, or general
+      if (category == 'picking' || category == 'general') {
+        _applyFilters(); // Re-fetch with current filters
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _refreshSub?.cancel();
+    _recFilterController.dispose();
+    _psFilterController.dispose();
+    _oprFilterController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Refresh when app comes to foreground
+      _applyFilters();
     }
   }
 

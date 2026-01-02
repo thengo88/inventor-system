@@ -20,7 +20,9 @@ class NotificationProvider with ChangeNotifier {
   }
 
   int _lastSystemUpdate = 0;
+  String _lastChangeCategory = 'general';
   int get lastSystemUpdate => _lastSystemUpdate;
+  String get lastChangeCategory => _lastChangeCategory;
 
   void _connectSocket() {
     _socket?.disconnect();
@@ -28,7 +30,6 @@ class NotificationProvider with ChangeNotifier {
       _socket = IO.io(_apiService.uploadUrl, <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': true,
-        // Add extra options to ensure robust connection
         'reconnection': true,
         'reconnectionAttempts': double.infinity,
         'reconnectionDelay': 1000,
@@ -42,7 +43,8 @@ class NotificationProvider with ChangeNotifier {
       _socket!.on('system_data_change', (data) {
         debugPrint('System data changed: $data');
         _lastSystemUpdate = DateTime.now().millisecondsSinceEpoch;
-        notifyListeners(); // This will trigger UI rebuilds or listeners
+        _lastChangeCategory = data is Map ? (data['category'] ?? 'general') : 'general';
+        notifyListeners();
       });
 
       _socket!.on('notification', (data) {

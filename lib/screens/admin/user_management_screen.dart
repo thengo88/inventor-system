@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/user.dart';
 import '../../services/api_service.dart';
+import '../../widgets/global_data_sync.dart';
+import 'dart:async';
 
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key});
@@ -11,13 +13,37 @@ class UserManagementScreen extends StatefulWidget {
   State<UserManagementScreen> createState() => _UserManagementScreenState();
 }
 
-class _UserManagementScreenState extends State<UserManagementScreen> {
+class _UserManagementScreenState extends State<UserManagementScreen>
+    with WidgetsBindingObserver {
+  StreamSubscription? _refreshSub;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AuthProvider>().fetchAllUsers();
     });
+
+    _refreshSub = GlobalDataSync.onRefresh.listen((category) {
+      if (category == 'users' || category == 'general') {
+        context.read<AuthProvider>().fetchAllUsers();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _refreshSub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      context.read<AuthProvider>().fetchAllUsers();
+    }
   }
 
   @override

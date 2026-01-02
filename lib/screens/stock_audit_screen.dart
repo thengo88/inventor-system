@@ -13,6 +13,7 @@ import '../services/api_service.dart';
 import '../providers/product_provider.dart';
 import '../providers/notification_provider.dart';
 import '../providers/settings_provider.dart' as sp;
+import '../widgets/global_data_sync.dart';
 import 'admin/system_screen.dart';
 import 'admin/erp_data_tab.dart';
 
@@ -27,7 +28,10 @@ class StockAuditScreen extends StatefulWidget {
 }
 
 class _StockAuditScreenState extends State<StockAuditScreen>
-    with SingleTickerProviderStateMixin, OptimizedOperations {
+    with
+        WidgetsBindingObserver,
+        SingleTickerProviderStateMixin,
+        OptimizedOperations {
   final AudioPlayer _audioPlayer = AudioPlayer();
   late TabController _tabController;
 
@@ -65,6 +69,7 @@ class _StockAuditScreenState extends State<StockAuditScreen>
   final Set<int> _selectedNotificationIndices = {};
   bool _isSelectionMode = false;
   String? _currentResolvingNotificationId;
+  StreamSubscription? _refreshSub;
 
   @override
   void initState() {
@@ -84,11 +89,21 @@ class _StockAuditScreenState extends State<StockAuditScreen>
     _filterUserController.addListener(_filterHistoryLocal);
 
     _loadInitialData();
-    WakelockPlus.enable();
+    WidgetsBinding.instance.addObserver(this);
+    _refreshSub = GlobalDataSync.onRefresh.listen((category) {
+      // Use contains to match 'stock-audit' or 'audit'
+      if (mounted &&
+          (category.contains('audit') ||
+              category.contains('erp') ||
+              category == 'general')) {
+        _loadInitialData(silent: true);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _refreshSub?.cancel();
     // WakelockPlus.disable(); // Removed to keep screen on globally as requested
     // _socket?.disconnect(); // Removed
     _tabController.dispose();
@@ -110,17 +125,19 @@ class _StockAuditScreenState extends State<StockAuditScreen>
     super.dispose();
   }
 
-  void _loadInitialData() {
-    _loadErpData();
-    _fetchHistory();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final user = context.read<AuthProvider>().currentUser?.username;
-      context.read<NotificationProvider>().init(user);
-    });
+  void _loadInitialData({bool silent = false}) {
+    _loadErpData(silent: silent);
+    _fetchHistory(silent: silent);
+    if (!silent) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final user = context.read<AuthProvider>().currentUser?.username;
+        context.read<NotificationProvider>().init(user);
+      });
+    }
   }
 
-  Future<void> _loadErpData() async {
-    setState(() => _isLoadingData = true);
+  Future<void> _loadErpData({bool silent = false}) async {
+    if (!silent) setState(() => _isLoadingData = true);
     try {
       final data = await ApiService().getErpStockFromDb(
         warehouse: _warehouseController.text.trim(),
@@ -696,8 +713,8 @@ class _StockAuditScreenState extends State<StockAuditScreen>
   }
 
   // --- History ---
-  Future<void> _fetchHistory() async {
-    setState(() => _isLoadingHistory = true);
+  Future<void> _fetchHistory({bool silent = false}) async {
+    if (!silent) setState(() => _isLoadingHistory = true);
     try {
       final history = await ApiService().getAuditHistory();
       if (mounted) {
