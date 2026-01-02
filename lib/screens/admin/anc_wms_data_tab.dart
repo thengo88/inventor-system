@@ -761,17 +761,23 @@ class _AncWmsDataTabState extends State<AncWmsDataTab>
                 ? _scrollableVerticalController
                 : _fixedVerticalController,
             itemCount: data.length,
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: true,
+            cacheExtent: 500,
             itemBuilder: (ctx, idx) {
               final item = data[idx];
               final cellBg = idx % 2 == 0
                   ? Colors.white
                   : Colors.grey[50]!.withOpacity(0.5);
-              return SizedBox(
-                height: 34,
-                child: Row(
-                  children: cols
-                      .map((c) => _renderDataCell(c, item, idx, data, cellBg))
-                      .toList(),
+
+              return RepaintBoundary(
+                child: SizedBox(
+                  height: 34,
+                  child: Row(
+                    children: cols
+                        .map((c) => _renderDataCell(c, item, idx, data, cellBg))
+                        .toList(),
+                  ),
                 ),
               );
             },

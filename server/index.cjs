@@ -1887,8 +1887,9 @@ app.get('/api/erp/warehouses', (req, res) => {
 });
 
 app.get('/api/erp/stock', (req, res) => {
-    const { warehouse, search } = req.query;
+    const { warehouse, search, limit, offset } = req.query;
     let query = `SELECT * FROM erp_stock`;
+    let countQuery = `SELECT COUNT(*) as total FROM erp_stock`;
     let params = [];
     let conditions = [];
 
@@ -1902,15 +1903,32 @@ app.get('/api/erp/stock', (req, res) => {
         params.push(`%${search}%`, `%${search}%`);
     }
 
-    if (conditions.length > 0) {
-        query += ` WHERE ${conditions.join(' AND ')}`;
-    }
+    const whereClause = conditions.length > 0 ? ` WHERE ${conditions.join(' AND ')}` : '';
+    query += whereClause;
+    countQuery += whereClause;
 
     query += ` ORDER BY id ASC`;
 
-    db.all(query, params, (err, rows) => {
+    // Add pagination
+    const pageLimit = parseInt(limit) || 200; // Default 200 rows per page
+    const pageOffset = parseInt(offset) || 0;
+    query += ` LIMIT ${pageLimit} OFFSET ${pageOffset}`;
+
+    // Get total count first
+    db.get(countQuery, params, (err, countRow) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
+
+        // Then get paginated data
+        db.all(query, params, (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({
+                data: rows,
+                total: countRow.total,
+                limit: pageLimit,
+                offset: pageOffset,
+                hasMore: (pageOffset + rows.length) < countRow.total
+            });
+        });
     });
 });
 

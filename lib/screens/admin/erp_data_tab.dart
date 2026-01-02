@@ -1959,6 +1959,9 @@ class _ErpDataTabState extends State<ErpDataTab>
                   child: ListView.builder(
                     controller: _fixedVerticalController,
                     itemCount: displayList.length,
+                    addAutomaticKeepAlives: false,
+                    addRepaintBoundaries: true,
+                    cacheExtent: 500,
                     itemBuilder: (context, index) {
                       final item = displayList[index];
                       final isTotal = item['is_total_row'] == true;
@@ -1967,20 +1970,23 @@ class _ErpDataTabState extends State<ErpDataTab>
                           : (index % 2 == 0
                                 ? Colors.white
                                 : Colors.grey[50]!.withOpacity(0.5));
-                      return SizedBox(
-                        height: 34,
-                        child: Row(
-                          children: fixedCols
-                              .map(
-                                (c) => _renderDataCell(
-                                  c,
-                                  item,
-                                  index,
-                                  displayList,
-                                  rowColor,
-                                ),
-                              )
-                              .toList(),
+
+                      return RepaintBoundary(
+                        child: SizedBox(
+                          height: 34,
+                          child: Row(
+                            children: fixedCols
+                                .map(
+                                  (c) => _renderDataCell(
+                                    c,
+                                    item,
+                                    index,
+                                    displayList,
+                                    rowColor,
+                                  ),
+                                )
+                                .toList(),
+                          ),
                         ),
                       );
                     },
@@ -2027,6 +2033,10 @@ class _ErpDataTabState extends State<ErpDataTab>
                       child: ListView.builder(
                         controller: _scrollableVerticalController,
                         itemCount: displayList.length,
+                        addAutomaticKeepAlives:
+                            false, // Don't keep offscreen widgets alive
+                        addRepaintBoundaries: true, // Optimize repainting
+                        cacheExtent: 500, // Limit cache to ~15 rows
                         itemBuilder: (context, index) {
                           final item = displayList[index];
                           final isTotal = item['is_total_row'] == true;
@@ -2035,20 +2045,24 @@ class _ErpDataTabState extends State<ErpDataTab>
                               : (index % 2 == 0
                                     ? Colors.white
                                     : Colors.grey[50]!.withOpacity(0.5));
-                          return SizedBox(
-                            height: 34,
-                            child: Row(
-                              children: scrollableCols
-                                  .map(
-                                    (c) => _renderDataCell(
-                                      c,
-                                      item,
-                                      index,
-                                      displayList,
-                                      rowColor,
-                                    ),
-                                  )
-                                  .toList(),
+
+                          // Wrap each row in RepaintBoundary for better performance
+                          return RepaintBoundary(
+                            child: SizedBox(
+                              height: 34,
+                              child: Row(
+                                children: scrollableCols
+                                    .map(
+                                      (c) => _renderDataCell(
+                                        c,
+                                        item,
+                                        index,
+                                        displayList,
+                                        rowColor,
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
                             ),
                           );
                         },
