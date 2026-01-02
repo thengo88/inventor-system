@@ -46,7 +46,7 @@ class _PickingScreenState extends State<PickingScreen>
 
     _refreshSub = GlobalDataSync.onRefresh.listen((category) {
       // Refresh if category is picking, or general
-      if (category == 'picking' || category == 'general') {
+      if (mounted && (category.contains('picking') || category == 'general')) {
         _applyFilters(); // Re-fetch with current filters
       }
     });

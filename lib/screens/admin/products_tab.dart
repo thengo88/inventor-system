@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
 import '../../providers/product_provider.dart';
 import '../../providers/settings_provider.dart';
 import '../../models/product.dart';
 import '../../services/api_service.dart';
+import '../../widgets/global_data_sync.dart';
 import 'edit_product_screen.dart';
 import 'warehouse_layout_screen.dart';
 
@@ -15,15 +17,40 @@ class ProductsTab extends StatefulWidget {
   State<ProductsTab> createState() => _ProductsTabState();
 }
 
-class _ProductsTabState extends State<ProductsTab> {
+class _ProductsTabState extends State<ProductsTab> with WidgetsBindingObserver {
   String _searchQuery = "";
+  StreamSubscription? _refreshSub;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProductProvider>().fetchProducts();
     });
+
+    _refreshSub = GlobalDataSync.onRefresh.listen((category) {
+      if (mounted &&
+          (category.contains('product') ||
+              category.contains('erp') ||
+              category == 'general')) {
+        context.read<ProductProvider>().fetchProducts();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _refreshSub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      context.read<ProductProvider>().fetchProducts();
+    }
   }
 
   @override

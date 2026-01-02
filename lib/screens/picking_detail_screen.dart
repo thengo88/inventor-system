@@ -49,7 +49,7 @@ class _PickingDetailScreenState extends State<PickingDetailScreen> {
     super.initState();
     _loadDetail();
     _refreshSub = GlobalDataSync.onRefresh.listen((category) {
-      if (category == 'picking') {
+      if (mounted && (category.contains('picking') || category == 'general')) {
         _loadDetail(silent: true);
       }
     });
@@ -477,14 +477,15 @@ class _PickingDetailScreenState extends State<PickingDetailScreen> {
   }
 
   void _confirmScan(PickingItem targetItem, int scannedQty) async {
+    // 1. Optimistic Update
     setState(() {
       targetItem.quantityPicked += scannedQty;
       _isScanning = false;
       _confirmedSkus.add(targetItem.sku);
-      _pendingConfirmation = false; // Clear pending state
+      _pendingConfirmation = false;
     });
 
-    // Update on server
+    // 2. Server Update
     await context.read<PickingProvider>().updateItemQuantity(
       targetItem,
       scannedQty,
@@ -495,8 +496,10 @@ class _PickingDetailScreenState extends State<PickingDetailScreen> {
       'Đã soạn $scannedQty cho ${targetItem.sku}. (${targetItem.quantityPicked}/${targetItem.quantityRequired})',
     );
 
-    // Auto-refresh UI
-    setState(() {});
+    // 3. Force Data Refresh to ensure consistency
+    if (mounted) {
+      _loadDetail(silent: true);
+    }
   }
 
   void _showManualEntryDialog() {
