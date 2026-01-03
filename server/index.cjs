@@ -2525,7 +2525,10 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
             if (i > headerRowIndex && r[cSku]) {
                 const sku = String(r[cSku]).trim();
                 // Basic validation
-                if (sku.length < 3 || sku.toUpperCase() === 'CODE' || sku.toUpperCase().includes('TOTAL')) return;
+                if (sku.length < 3 || sku.toUpperCase() === 'CODE' || sku.toUpperCase().includes('TOTAL')) {
+                    // console.log(`[ERP Import] Row ${i} skipped: Invalid SKU '${sku}'`);
+                    return;
+                }
 
                 const qtyVal = cQty > -1 ? r[cQty] : '0';
                 const q = String(qtyVal || 0).replace(/,/g, '');
@@ -2540,12 +2543,13 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
             }
         });
 
+        console.log(`[ERP Import] Extracted ${data.length} valid items.`);
+
         if (data.length > 0) {
+            console.log('[ERP Import] Starting DB Transaction...');
             const syncMarker = new Date().toISOString();
             withTransaction(db, async () => {
-                // KHÔNG xóa sạch dữ liệu cũ nữa để bảo toàn số KK
-                // Chúng ta sẽ set quantity = 0 cho các mã không xuất hiện trong file Excel này
-
+                // ... (Logic continues)
                 const stmt = db.prepare(`
                     INSERT INTO erp_stock (sku, sku_plain, name, warehouse, quantity, updatedAt) 
                     VALUES (?, ?, ?, ?, ?, ?)
@@ -2571,15 +2575,14 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
                     });
                 });
 
+                console.log('[ERP Import] Upsert complete. Cleaning up old records...');
+
                 // Cập nhật các mã KHÔNG có trong file này thành Qty = 0
-                // Chỉ áp dụng cho kho đang import (nếu file Excel có chỉ định kho)
-                // Hoặc nếu import cho 1 kho cụ thể từ dropdown
                 let clearQuery = `UPDATE erp_stock SET quantity = '0', updatedAt = ?,
                                   difference = CAST(COALESCE(total_kk, 0) AS REAL)
                                   WHERE updatedAt < ?`;
                 let clearParams = [syncMarker, syncMarker];
 
-                // Nếu User chọn kho từ Dropdown (warehouse variable)
                 if (warehouse && warehouse !== 'Tất cả') {
                     clearQuery += ` AND warehouse = ?`;
                     clearParams.push(warehouse);
@@ -2590,15 +2593,18 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
                         if (err) reject(err); else resolve();
                     });
                 });
+                console.log('[ERP Import] Cleanup complete.');
 
             }).then(() => {
-                io.emit('erp_update_all', {}); // Thêm dòng này để thông báo cho toàn bộ UI cập nhật
+                console.log('[ERP Import] Transaction Committed Successfully.');
+                io.emit('erp_update_all', {});
                 res.json({ message: 'Import successful', count: data.length });
             }).catch(err => {
                 console.error('Import ERP transaction error:', err);
                 res.status(500).json({ error: err.message });
             });
         } else {
+            console.warn('[ERP Import] No data found after extraction.');
             res.status(400).json({ error: 'No valid data found in Excel (Parsed 0 rows)' });
         }
 
