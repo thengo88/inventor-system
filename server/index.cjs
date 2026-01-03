@@ -140,6 +140,59 @@ function normalizeSku(sku) {
     return sku.toString().replace(/-/g, '').trim().toUpperCase();
 }
 
+function parseExcelHeaders(rows) {
+    let bestRow = -1;
+    let maxScore = 0;
+    let colMap = { sku: -1, qty: -1, name: -1, warehouse: -1 };
+
+    // Search first 20 rows
+    for (let i = 0; i < Math.min(rows.length, 20); i++) {
+        const row = rows[i];
+        if (!Array.isArray(row)) continue;
+
+        let score = 0;
+        let tempMap = { sku: -1, qty: -1, name: -1, warehouse: -1 };
+
+        row.forEach((cell, j) => {
+            if (!cell) return;
+            const s = String(cell).toUpperCase().trim();
+            
+            // SKU
+            if (['CODE', 'ITEM NO', 'PART NO', 'SKU', 'MÃ', 'MÃ VẬT TƯ', 'ITEM CODE'].includes(s) || 
+                (s.includes('CODE') && !s.includes('TOTAL'))) {
+                tempMap.sku = j; score += 2;
+            }
+            
+            // QTY
+            if (['QTY', 'QTY(PCS)', 'QUANTITY', 'SOLUONG', 'SỐ LƯỢNG', 'TON CUOI', 'TỒN CUỐI'].includes(s)) {
+                tempMap.qty = j; score += 2;
+            } else if (s.includes('QTY') || s.includes('QUANTITY')) {
+                tempMap.qty = j; score += 1;
+            }
+
+            // NAME
+            if (['NAME', 'ITEM NAME', 'DESCRIPTION', 'TÊN', 'TÊN VẬT TƯ', 'DIỄN GIẢI', 'SPECIFICATION'].includes(s)) {
+                tempMap.name = j; score += 2;
+            } else if (s.includes('NAME') || s.includes('DESC')) {
+                tempMap.name = j; score += 1;
+            }
+
+            // WAREHOUSE
+            if (['WAREHOUSE', 'KHO'].includes(s)) {
+                tempMap.warehouse = j; score += 2;
+            }
+        });
+
+        if (tempMap.sku > -1 && tempMap.qty > -1 && score > maxScore) {
+            maxScore = score;
+            bestRow = i;
+            colMap = tempMap;
+        }
+    }
+
+    return { headerRowIndex: bestRow, colMap };
+}
+
 
 // Multer Setup
 const storage = multer.diskStorage({
@@ -2134,23 +2187,31 @@ app.post('/api/erp/sync', async (req, res) => {
                 const rows = xlsx.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
                 // Parsing logic...
                 // (Simplified Mapper):
-                let cSku = -1, cQty = -1;
-                rows.forEach((r, i) => {
-                    r.forEach((c, j) => {
-                        const s = String(c).toUpperCase();
-                        if (s.includes('CODE') || (s.includes('ITEM') && s.includes('NO'))) cSku = j;
-                        if (s.includes('QTY') || s.includes('QUANTITY')) cQty = j;
-                    });
-                });
-                if (cSku > -1) {
+                // Parsing logic using centralized helper
+                const { headerRowIndex, colMap } = parseExcelHeaders(rows);
+                
+                if (headerRowIndex > -1) {
+                    const cSku = colMap.sku;
+                    const cQty = colMap.qty;
+                    const cName = colMap.name;
+                    const cWh = colMap.warehouse;
+
                     rows.forEach((r, i) => {
-                        if (i > 3 && r[cSku]) {
+                        // Skip header and above
+                        if (i > headerRowIndex && r[cSku]) {
+                            const skuStr = String(r[cSku]).trim();
+                             // Basic Ignore rules
+                            if (skuStr.length < 3 || skuStr.includes('Total') || skuStr.includes('Page')) return;
+
                             const q = cQty > -1 ? String(r[cQty] || 0).replace(/,/g, '') : '0';
-                            const n = r[cSku + 1] || r[cSku + 2] || '';
-                            data.push({ sku: String(r[cSku]), name: String(n), warehouse: warehouse || '', quantity: q });
+                            const n = cName > -1 ? (r[cName] || '') : '';
+                            const w = cWh > -1 ? (r[cWh] || '') : (warehouse || '');
+                            
+                            data.push({ sku: skuStr, name: String(n), warehouse: String(w), quantity: q });
                         }
                     });
                 }
+
                 progress(`Đã đọc ${data.length} mã vật tư từ Excel`, 0.85);
             }
         } else {
@@ -2428,39 +2489,21 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
         } catch (e) { }
 
         const data = [];
-        let cSku = -1, cQty = -1, cName = -1, cWh = -1;
+        const { headerRowIndex, colMap } = parseExcelHeaders(rows);
 
-        // Header detection (similar to Sync)
-        // Look in first 10 rows
-        for (let i = 0; i < Math.min(rows.length, 10); i++) {
-            const r = rows[i];
-            r.forEach((c, j) => {
-                const s = String(c).toUpperCase().trim();
-                // Priority specific matches based on user request
-                if (s === 'CODE' || s === 'ITEM NO' || s === 'PART NO' || s === 'SKU') cSku = j;
-                else if (s.includes('CODE') || s.includes('SKU')) cSku = j; // Fallback
-
-                if (s === 'QTY(PCS)' || s === 'QTY' || s === 'QUANTITY' || s === 'SOLUONG') cQty = j;
-                else if (s.includes('QTY') || s.includes('QUANTITY')) cQty = j; // Fallback
-
-                if (s === 'ITEM NAME' || s === 'NAME' || s === 'DESCRIPTION' || s === 'TÊN') cName = j;
-                else if (s.includes('NAME') || s.includes('DESC')) cName = j; // Fallback
-
-                if (s.includes('WAREHOUSE') || s.includes('KHO')) cWh = j;
-            });
-            if (cSku > -1 && cQty > -1) break; // Found headers
+        if (headerRowIndex === -1) {
+             return res.status(400).json({ error: 'Could not detect SKU/Code & Quantity columns in Excel.' });
         }
 
-        if (cSku === -1) {
-            return res.status(400).json({ error: 'Could not detect SKU/Code column in Excel.' });
-        }
+        const cSku = colMap.sku;
+        const cQty = colMap.qty;
+        const cName = colMap.name;
+        const cWh = colMap.warehouse;
 
         rows.forEach((r, i) => {
-            // Skip potential header rows if we identified them by content, 
-            // but simpler is to just check if the SKU looks valid
-            if (i > 0 && r[cSku]) {
+            if (i > headerRowIndex && r[cSku]) {
                 const sku = String(r[cSku]).trim();
-                // Basic validation: SKU should be longer than 3 chars roughly
+                // Basic validation
                 if (sku.length < 3 || sku.toUpperCase() === 'CODE' || sku.toUpperCase().includes('TOTAL')) return;
 
                 const qtyVal = cQty > -1 ? r[cQty] : '0';
