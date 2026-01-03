@@ -1163,6 +1163,16 @@ class ApiService {
     return [];
   }
 
+  Future<bool> deleteErpStock(int id) async {
+    try {
+      final response = await http.delete(Uri.parse('$baseUrl/erp/stock/$id'));
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Delete ERP stock error: $e');
+    }
+    return false;
+  }
+
   // Update Stock Audit (KK columns)
   Future<Map<String, dynamic>?> updateStockAudit({
     required String sku,

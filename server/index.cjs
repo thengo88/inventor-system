@@ -2490,6 +2490,23 @@ app.post('/api/erp/audit-update-slots', (req, res) => {
     }
 });
 
+app.delete('/api/erp/stock/:id', (req, res) => {
+    const { id } = req.params;
+    db.run('DELETE FROM erp_stock WHERE id = ?', [id], function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        if (this.changes === 0) return res.status(404).json({ error: 'Item not found' });
+
+        io.emit('system_data_change', {
+            method: 'DELETE',
+            path: `/api/erp/stock/${id}`,
+            category: 'erp',
+            timestamp: Date.now()
+        });
+
+        res.json({ message: 'Deleted successfully' });
+    });
+});
+
 app.post('/api/erp/import', upload.single('file'), (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
     const { warehouse } = req.body;

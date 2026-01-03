@@ -169,6 +169,7 @@ class _ErpDataTabState extends State<ErpDataTab>
         align: TextAlign.left,
       ),
       ErpColumn(key: 're_audit', label: 'Kiểm lại', width: 80, isSpecial: true),
+      ErpColumn(key: 'actions', label: 'Xóa', width: 60, isSpecial: true),
     ];
   }
 
@@ -213,6 +214,22 @@ class _ErpDataTabState extends State<ErpDataTab>
               ),
             );
           }
+        }
+
+        // Ensure actions column exists
+        if (!loaded.any((c) => c.key == 'actions')) {
+          loaded.add(ErpColumn(key: 'actions', label: 'Xóa', width: 60, isSpecial: true));
+        }
+
+        // Ensure re_audit column exists (backward compat)
+        if (!loaded.any((c) => c.key == 're_audit')) {
+           // Insert before 'actions' if possible, or at end
+            int actionsIdx = loaded.indexWhere((c) => c.key == 'actions');
+            if (actionsIdx != -1) {
+                loaded.insert(actionsIdx, ErpColumn(key: 're_audit', label: 'Kiểm lại', width: 80, isSpecial: true));
+            } else {
+                loaded.add(ErpColumn(key: 're_audit', label: 'Kiểm lại', width: 80, isSpecial: true));
+            }
         }
 
         setState(() => _columns = loaded);
@@ -978,6 +995,55 @@ class _ErpDataTabState extends State<ErpDataTab>
       } finally {
         if (mounted) setState(() => _isLoading = false);
       }
+    }
+  }
+
+  Future<void> _confirmDelete(dynamic item) async {
+    final sku = item['sku'];
+    final id = item['id'];
+
+    if (id == null) return;
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Xác nhận xóa'),
+        content: Text('Bạn có chắc muốn xóa mã $sku này không?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Hủy'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Xóa'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      if (mounted) setState(() => _isLoading = true);
+      final success = await _apiService.deleteErpStock(id);
+      if (success) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Đã xóa thành công')));
+          _loadLocalData();
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Xóa thất bại')));
+        }
+      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -2339,6 +2405,19 @@ class _ErpDataTabState extends State<ErpDataTab>
       );
     } else if (col.key == 're_audit' && !isTotal) {
       cellWidget = _buildReAuditButton(item, col.width, cellBg: cellBg);
+    } else if (col.key == 'actions' && !isTotal) {
+      cellWidget = Container(
+        width: col.width,
+        height: 34,
+        color: cellBg ?? Colors.transparent,
+        alignment: Alignment.center,
+        child: IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red, size: 18),
+          onPressed: () => _confirmDelete(item),
+          tooltip: 'Xóa dòng này',
+          padding: EdgeInsets.zero,
+        ),
+      );
     } else if (col.key == 'stt') {
       cellWidget = _cell(
         isTotal ? "" : (rowIndex + 1).toString(),
