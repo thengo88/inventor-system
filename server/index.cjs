@@ -1969,27 +1969,36 @@ app.get('/api/erp/stock', (req, res) => {
 
     query += ` ORDER BY id ASC`;
 
-    // Add pagination
-    const pageLimit = parseInt(limit) || 200; // Default 200 rows per page
-    const pageOffset = parseInt(offset) || 0;
-    query += ` LIMIT ${pageLimit} OFFSET ${pageOffset}`;
+    // Add pagination only if requested
+    if (limit) {
+        const pageLimit = parseInt(limit);
+        const pageOffset = parseInt(offset) || 0;
 
-    // Get total count first
-    db.get(countQuery, params, (err, countRow) => {
-        if (err) return res.status(500).json({ error: err.message });
+        query += ` LIMIT ${pageLimit} OFFSET ${pageOffset}`;
 
-        // Then get paginated data
-        db.all(query, params, (err, rows) => {
+        // Get total count first
+        db.get(countQuery, params, (err, countRow) => {
             if (err) return res.status(500).json({ error: err.message });
-            res.json({
-                data: rows,
-                total: countRow.total,
-                limit: pageLimit,
-                offset: pageOffset,
-                hasMore: (pageOffset + rows.length) < countRow.total
+
+            // Then get paginated data
+            db.all(query, params, (err, rows) => {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json({
+                    data: rows,
+                    total: countRow.total,
+                    limit: pageLimit,
+                    offset: pageOffset,
+                    hasMore: (pageOffset + rows.length) < countRow.total
+                });
             });
         });
-    });
+    } else {
+        // No pagination - return all rows as list (Legacy mode for current App)
+        db.all(query, params, (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json(rows);
+        });
+    }
 });
 
 app.post('/api/erp/sync', async (req, res) => {
