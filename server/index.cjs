@@ -2521,12 +2521,23 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
         const cName = colMap.name;
         const cWh = colMap.warehouse;
 
+        let skippedCount = 0;
         rows.forEach((r, i) => {
-            if (i > headerRowIndex && r[cSku]) {
+            if (i <= headerRowIndex) return; // Skip header
+
+            if (!Array.isArray(r)) {
+                // console.log(`[ERP Import] Row ${i} skipped: Not an array`);
+                skippedCount++;
+                return;
+            }
+
+            if (r[cSku]) {
                 const sku = String(r[cSku]).trim();
-                // Basic validation
-                if (sku.length < 3 || sku.toUpperCase() === 'CODE' || sku.toUpperCase().includes('TOTAL')) {
-                    // console.log(`[ERP Import] Row ${i} skipped: Invalid SKU '${sku}'`);
+
+                // Relaxed validation: Length >= 1, ignore specific keywords
+                if (sku.length < 1 || sku.toUpperCase() === 'CODE' || sku.toUpperCase().includes('TOTAL')) {
+                    if (skippedCount < 5) console.log(`[ERP Import] Row ${i} skipped: Invalid SKU '${sku}'`);
+                    skippedCount++;
                     return;
                 }
 
@@ -2534,16 +2545,16 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
                 const q = String(qtyVal || 0).replace(/,/g, '');
 
                 const name = cName > -1 ? (r[cName] || '') : '';
-                // If warehouse is not provided in body, try to read from row, else default to 'Unknown'
                 const itemWh = warehouse || (cWh > -1 ? (r[cWh] || '') : '');
 
-                if (sku) {
-                    data.push({ sku: sku, name: String(name), warehouse: String(itemWh), quantity: q });
-                }
+                data.push({ sku: sku, name: String(name), warehouse: String(itemWh), quantity: q });
+            } else {
+                // console.log(`[ERP Import] Row ${i} skipped: No SKU at column ${cSku}`);
+                skippedCount++;
             }
         });
 
-        console.log(`[ERP Import] Extracted ${data.length} valid items.`);
+        console.log(`[ERP Import] Extraction summary: ${data.length} valid, ${skippedCount} skipped.`);
 
         if (data.length > 0) {
             console.log('[ERP Import] Starting DB Transaction...');
