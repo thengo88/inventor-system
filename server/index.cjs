@@ -2559,32 +2559,47 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
         if (data.length > 0) {
             console.log('[ERP Import] Starting DB Transaction...');
             const syncMarker = new Date().toISOString();
-            withTransaction(db, async () => {
-                // ... (Logic continues)
-                const stmt = db.prepare(`
-                    INSERT INTO erp_stock (sku, sku_plain, name, warehouse, quantity, updatedAt) 
-                    VALUES (?, ?, ?, ?, ?, ?)
-                    ON CONFLICT(sku, warehouse) DO UPDATE SET 
-                        quantity = excluded.quantity,
-                        name = excluded.name,
-                        sku_plain = excluded.sku_plain,
-                        updatedAt = excluded.updatedAt,
-                        difference = CAST(COALESCE(total_kk, 0) AS REAL) - CAST(REPLACE(excluded.quantity, ',', '') AS REAL)
-                `);
 
-                for (const item of data) {
+            // Batch processing function
+            const BATCH_SIZE = 50;
+            const chunks = [];
+            for (let i = 0; i < data.length; i += BATCH_SIZE) {
+                chunks.push(data.slice(i, i + BATCH_SIZE));
+            }
+
+            withTransaction(db, async () => {
+                // Upsert logic
+                for (const chunk of chunks) {
+                    const placeholders = chunk.map(() => '(?, ?, ?, ?, ?, ?)').join(',');
+                    const params = [];
+                    chunk.forEach(item => {
+                        params.push(
+                            item.sku,
+                            normalizeSku(item.sku),
+                            item.name,
+                            item.warehouse,
+                            item.quantity,
+                            syncMarker
+                        );
+                    });
+
+                    const sql = `
+                        INSERT INTO erp_stock (sku, sku_plain, name, warehouse, quantity, updatedAt) 
+                        VALUES ${placeholders}
+                        ON CONFLICT(sku, warehouse) DO UPDATE SET 
+                            quantity = excluded.quantity,
+                            name = excluded.name,
+                            sku_plain = excluded.sku_plain,
+                            updatedAt = excluded.updatedAt,
+                            difference = CAST(COALESCE(total_kk, 0) AS REAL) - CAST(REPLACE(excluded.quantity, ',', '') AS REAL)
+                    `;
+
                     await new Promise((resolve, reject) => {
-                        stmt.run(item.sku, normalizeSku(item.sku), item.name, item.warehouse, item.quantity, syncMarker, (err) => {
+                        db.run(sql, params, (err) => {
                             if (err) reject(err); else resolve();
                         });
                     });
                 }
-
-                await new Promise((resolve, reject) => {
-                    stmt.finalize((err) => {
-                        if (err) reject(err); else resolve();
-                    });
-                });
 
                 console.log('[ERP Import] Upsert complete. Cleaning up old records...');
 
