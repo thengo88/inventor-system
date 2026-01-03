@@ -2486,10 +2486,17 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
     const { warehouse } = req.body;
 
     try {
+        console.log(`[ERP Import] Processing file: ${req.file.originalname}`);
         const fileBuffer = fs.readFileSync(req.file.path);
         const workbook = xlsx.read(fileBuffer, { type: 'buffer' });
         const sheetName = workbook.SheetNames[0];
+        console.log(`[ERP Import] Sheet Name: ${sheetName}`);
+
         const rows = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+        console.log(`[ERP Import] Total Rows: ${rows.length}`);
+        if (rows.length > 0) {
+            console.log('[ERP Import] First Row Sample:', JSON.stringify(rows[0]));
+        }
 
         try {
             fs.unlinkSync(req.file.path);
@@ -2499,8 +2506,15 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
         const { headerRowIndex, colMap } = parseExcelHeaders(rows);
 
         if (headerRowIndex === -1) {
-            return res.status(400).json({ error: 'Could not detect SKU/Code & Quantity columns in Excel.' });
+            console.error('[ERP Import] FAILED to detect headers.');
+            // Debug response
+            const sample = rows.slice(0, 3).map(r => JSON.stringify(r)).join(' | ');
+            return res.status(400).json({
+                error: `Could not detect SKU/Code & Quantity columns. Version V4. First 3 rows seen: ${sample}`
+            });
         }
+
+        console.log(`[ERP Import] Headers found at row ${headerRowIndex}. Map:`, colMap);
 
         const cSku = colMap.sku;
         const cQty = colMap.qty;
@@ -2585,7 +2599,7 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
                 res.status(500).json({ error: err.message });
             });
         } else {
-            res.status(400).json({ error: 'No valid data found in Excel' });
+            res.status(400).json({ error: 'No valid data found in Excel (Parsed 0 rows)' });
         }
 
     } catch (e) {
