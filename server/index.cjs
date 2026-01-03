@@ -140,6 +140,11 @@ function normalizeSku(sku) {
     return sku.toString().replace(/-/g, '').trim().toUpperCase();
 }
 
+function normalizeSku(sku) {
+    if (!sku) return '';
+    return sku.toString().replace(/-/g, '').trim().toUpperCase();
+}
+
 function parseExcelHeaders(rows) {
     let bestRow = -1;
     let maxScore = 0;
@@ -156,29 +161,31 @@ function parseExcelHeaders(rows) {
         row.forEach((cell, j) => {
             if (!cell) return;
             const s = String(cell).toUpperCase().trim();
-            
-            // SKU
-            if (['CODE', 'ITEM NO', 'PART NO', 'SKU', 'MÃ', 'MÃ VẬT TƯ', 'ITEM CODE'].includes(s) || 
-                (s.includes('CODE') && !s.includes('TOTAL'))) {
+
+            // SKU Keywords
+            const skuKeywords = ['CODE', 'ITEM NO', 'PART NO', 'SKU', 'MÃ', 'MÃ VẬT TƯ', 'ITEM CODE', 'MÃ HÀNG', 'MÃ SP', 'MASP', 'MATERIAL', 'PRODUCT ID'];
+            if (skuKeywords.includes(s) || (s.includes('CODE') && !s.includes('TOTAL') && !s.includes('PAGE'))) {
                 tempMap.sku = j; score += 2;
             }
-            
-            // QTY
-            if (['QTY', 'QTY(PCS)', 'QUANTITY', 'SOLUONG', 'SỐ LƯỢNG', 'TON CUOI', 'TỒN CUỐI'].includes(s)) {
+
+            // QTY Keywords
+            const qtyKeywords = ['QTY', 'QTY(PCS)', 'QUANTITY', 'SOLUONG', 'SỐ LƯỢNG', 'TON CUOI', 'TỒN CUỐI', 'TỒN', 'SL', 'SLG', 'SỐ LƯỢNG TỒN', 'THỰC TẾ', 'STOCK', 'ON HAND'];
+            if (qtyKeywords.includes(s)) {
                 tempMap.qty = j; score += 2;
-            } else if (s.includes('QTY') || s.includes('QUANTITY')) {
+            } else if (s.includes('QTY') || s.includes('QUANTITY') || s.includes('SỐ LƯỢNG') || s.includes('TỒN')) {
                 tempMap.qty = j; score += 1;
             }
 
-            // NAME
-            if (['NAME', 'ITEM NAME', 'DESCRIPTION', 'TÊN', 'TÊN VẬT TƯ', 'DIỄN GIẢI', 'SPECIFICATION'].includes(s)) {
+            // NAME Keywords
+            const nameKeywords = ['NAME', 'ITEM NAME', 'DESCRIPTION', 'TÊN', 'TÊN VẬT TƯ', 'DIỄN GIẢI', 'SPECIFICATION', 'TÊN HÀNG', 'TÊN SP'];
+            if (nameKeywords.includes(s)) {
                 tempMap.name = j; score += 2;
-            } else if (s.includes('NAME') || s.includes('DESC')) {
+            } else if (s.includes('NAME') || s.includes('DESC') || s.includes('TÊN')) {
                 tempMap.name = j; score += 1;
             }
 
-            // WAREHOUSE
-            if (['WAREHOUSE', 'KHO'].includes(s)) {
+            // WAREHOUSE Keywords
+            if (['WAREHOUSE', 'KHO', 'KHO HÀNG'].includes(s) || s.includes('WAREHOUSE')) {
                 tempMap.warehouse = j; score += 2;
             }
         });
@@ -2189,7 +2196,7 @@ app.post('/api/erp/sync', async (req, res) => {
                 // (Simplified Mapper):
                 // Parsing logic using centralized helper
                 const { headerRowIndex, colMap } = parseExcelHeaders(rows);
-                
+
                 if (headerRowIndex > -1) {
                     const cSku = colMap.sku;
                     const cQty = colMap.qty;
@@ -2200,13 +2207,13 @@ app.post('/api/erp/sync', async (req, res) => {
                         // Skip header and above
                         if (i > headerRowIndex && r[cSku]) {
                             const skuStr = String(r[cSku]).trim();
-                             // Basic Ignore rules
+                            // Basic Ignore rules
                             if (skuStr.length < 3 || skuStr.includes('Total') || skuStr.includes('Page')) return;
 
                             const q = cQty > -1 ? String(r[cQty] || 0).replace(/,/g, '') : '0';
                             const n = cName > -1 ? (r[cName] || '') : '';
                             const w = cWh > -1 ? (r[cWh] || '') : (warehouse || '');
-                            
+
                             data.push({ sku: skuStr, name: String(n), warehouse: String(w), quantity: q });
                         }
                     });
@@ -2492,7 +2499,7 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
         const { headerRowIndex, colMap } = parseExcelHeaders(rows);
 
         if (headerRowIndex === -1) {
-             return res.status(400).json({ error: 'Could not detect SKU/Code & Quantity columns in Excel.' });
+            return res.status(400).json({ error: 'Could not detect SKU/Code & Quantity columns in Excel.' });
         }
 
         const cSku = colMap.sku;
