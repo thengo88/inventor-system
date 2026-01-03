@@ -216,23 +216,29 @@ class _ErpDataTabState extends State<ErpDataTab>
           }
         }
 
+        bool listChanged = false;
+
         // Ensure actions column exists
         if (!loaded.any((c) => c.key == 'actions')) {
           loaded.add(ErpColumn(key: 'actions', label: 'Xóa', width: 60, isSpecial: true));
+          listChanged = true;
         }
 
         // Ensure re_audit column exists (backward compat)
         if (!loaded.any((c) => c.key == 're_audit')) {
-           // Insert before 'actions' if possible, or at end
             int actionsIdx = loaded.indexWhere((c) => c.key == 'actions');
             if (actionsIdx != -1) {
                 loaded.insert(actionsIdx, ErpColumn(key: 're_audit', label: 'Kiểm lại', width: 80, isSpecial: true));
             } else {
                 loaded.add(ErpColumn(key: 're_audit', label: 'Kiểm lại', width: 80, isSpecial: true));
             }
+            listChanged = true;
         }
 
-        setState(() => _columns = loaded);
+        setState(() {
+          _columns = loaded;
+          if (listChanged) _saveColumnConfig();
+        });
       } catch (e) {
         debugPrint('Error loading column config: $e');
       }
@@ -1930,18 +1936,34 @@ class _ErpDataTabState extends State<ErpDataTab>
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Tùy chỉnh bảng dữ liệu"),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _addColumnDialog();
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text("Thêm cột"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                  ),
+                const Text("Cấu hình bảng"),
+                Row(
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _initColumns();
+                          _saveColumnConfig();
+                        });
+                        setDialogState(() {});
+                      },
+                      icon: const Icon(Icons.restore),
+                      label: const Text("Mặc định"),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _addColumnDialog();
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text("Thêm"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
