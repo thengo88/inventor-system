@@ -31,6 +31,11 @@ class _ErpDataTabState extends State<ErpDataTab>
   String _selectedWarehouse = "Tất cả";
   List<String> _warehouses = ["Tất cả"];
   String _currentUsername = "";
+  
+  // Real-time Sync Progress state
+  String _syncStatus = "";
+  double _syncPercent = 0;
+  bool _isSyncing = false;
   // Removed _selectedDate and _warehouseController from main state
   // as they are now local to the Sync Dialog.
 
@@ -88,6 +93,17 @@ class _ErpDataTabState extends State<ErpDataTab>
               category.contains('audit') ||
               category == 'general')) {
         _loadLocalData();
+      }
+    });
+
+    // Listen for real-time sync progress via Socket.IO
+    _apiService.socket?.on('erp_sync_progress', (data) {
+      if (mounted) {
+        setState(() {
+          _syncStatus = data['status'] ?? "";
+          _syncPercent = (data['percent'] ?? 0.0).toDouble();
+          _isSyncing = _syncPercent < 1.0;
+        });
       }
     });
 
@@ -400,7 +416,12 @@ class _ErpDataTabState extends State<ErpDataTab>
   }
 
   Future<void> _fetchErpData(String dateVal, String warehouseVal) async {
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _isSyncing = true;
+      _syncStatus = "Đang bắt đầu...";
+      _syncPercent = 0.01;
+    });
     try {
       final result = await _apiService.syncErpStockData(
         date: dateVal,
@@ -1302,12 +1323,14 @@ class _ErpDataTabState extends State<ErpDataTab>
 
   @override
   Widget build(BuildContext context) {
+    if (_columns.isEmpty) return const Center(child: CircularProgressIndicator());
+
     final filtered = _erpData.where((item) {
       final q = _searchQuery.toLowerCase();
-      final matchesSearch =
-          (item['sku'] ?? '').toString().toLowerCase().contains(q) ||
-          (item['sku_plain'] ?? '').toString().toLowerCase().contains(q) ||
-          (item['name'] ?? '').toString().toLowerCase().contains(q);
+      final sku = (item['sku'] ?? '').toString().toLowerCase();
+      final name = (item['name'] ?? '').toString().toLowerCase();
+      final sku_plain = (item['sku_plain'] ?? '').toString().toLowerCase();
+      final matchesSearch = sku.contains(q) || name.contains(q) || sku_plain.contains(q);
 
       final matchesWarehouse =
           _selectedWarehouse == "Tất cả" ||
@@ -1332,6 +1355,9 @@ class _ErpDataTabState extends State<ErpDataTab>
 
     return Column(
       children: [
+        if (_isSyncing) _buildSyncProgress(),
+        _buildFiltersTab(),
+        const Divider(height: 1),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Column(
@@ -1551,6 +1577,87 @@ class _ErpDataTabState extends State<ErpDataTab>
               : _buildTable(filtered),
         ),
       ],
+    );
+  }
+
+  Widget _buildFiltersTab() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.filter_list, size: 20, color: Colors.blueGrey),
+          const SizedBox(width: 12),
+          const Text(
+            'Kho:',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
+          ),
+          const SizedBox(width: 8),
+          DropdownButton<String>(
+            value: _selectedWarehouse,
+            underline: const SizedBox(),
+            items: _warehouses.map((w) {
+              return DropdownMenuItem(
+                value: w,
+                child: Text(w, style: const TextStyle(fontSize: 14)),
+              );
+            }).toList(),
+            onChanged: (v) {
+              if (v != null) {
+                setState(() => _selectedWarehouse = v);
+                _loadLocalData();
+              }
+            },
+          ),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSyncProgress() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      color: Colors.blue[50],
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Đang đồng bộ ERP: $_syncStatus',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+              Text(
+                '${(_syncPercent * 100).toInt()}%',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: _syncPercent,
+            backgroundColor: Colors.blue[100],
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+          ),
+        ],
+      ),
     );
   }
 

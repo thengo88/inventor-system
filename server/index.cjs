@@ -1946,8 +1946,14 @@ app.post('/api/erp/sync', async (req, res) => {
 
     const userDataDir = path.join(os.tmpdir(), 'puppeteer_user_data_' + Date.now());
 
+    const syncMarker = new Date().toISOString();
+    const progress = (status, percent) => {
+        io.emit('erp_sync_progress', { status, percent, warehouse: warehouse || 'All' });
+        console.log(`[ERP Sync] ${status} (${Math.round(percent * 100)}%)`);
+    };
+
     try {
-        console.log('[ERP] Đang khởi tạo trình duyệt...');
+        progress('Khởi tạo trình duyệt...', 0.05);
         browser = await puppeteer.launch({
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--start-maximized'],
@@ -1967,7 +1973,7 @@ app.post('/api/erp/sync', async (req, res) => {
         page.setDefaultTimeout(60000);
 
         // --- 1. Login Logic ---
-        console.log('[ERP] Kiểm tra trạng thái đăng nhập...');
+        progress('Kiểm tra trạng thái đăng nhập...', 0.1);
         await page.goto('http://113.161.136.106:97/RapidIS/Default.aspx', { waitUntil: 'networkidle2' });
 
         // Check if on login page
@@ -1976,7 +1982,7 @@ app.post('/api/erp/sync', async (req, res) => {
         });
 
         if (isLoginPage) {
-            console.log('[ERP] Đang thực hiện đăng nhập...');
+            progress('Đang thực hiện đăng nhập...', 0.15);
             const username = 'anchor\\AFS1757';
             const password = 'hAnoi89@';
 
@@ -2004,7 +2010,7 @@ app.post('/api/erp/sync', async (req, res) => {
         }
 
         // --- 2. Navigate to Report ---
-        console.log('[ERP] Đang chuyển đến Báo cáo kho...');
+        progress('Chuyển đến trang báo cáo...', 0.25);
         const directReportUrl = 'http://113.161.136.106:97/RapidIS/default.aspx?A2ProcessName=Warehouse&A2Option=AutoSearch&TabName=WarehousingReports%2C%3B%2CSearchPrintPIONew&Action=Edit&A2RstName=A2Company';
         await page.goto(directReportUrl, { waitUntil: 'networkidle0', timeout: 60000 });
         await new Promise(r => setTimeout(r, 3000));
@@ -2015,7 +2021,7 @@ app.post('/api/erp/sync', async (req, res) => {
             const today = new Date();
             dateToFill = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}`;
         }
-        console.log(`Filling date: ${dateToFill}, Warehouse: ${warehouse}`);
+        progress(`Điền tham số: ${dateToFill} | ${warehouse || 'Tất cả'}`, 0.3);
 
         // Robust Input Filling
         const fillInput = async (selectors, value) => {
@@ -2032,7 +2038,7 @@ app.post('/api/erp/sync', async (req, res) => {
         if (warehouse) await fillInput(['input[name="NewWarehouse"]', 'input[id*="Warehouse"]'], warehouse);
 
         // --- 4. Click Print ---
-        console.log('[ERP] Đang tìm nút "In"...');
+        progress('Đang chạy báo cáo...', 0.35);
         let printBtn = await page.$('button[name="SearchPrintPIONew"]');
         if (!printBtn) printBtn = await page.$('button.sbttn');
 
@@ -2064,7 +2070,7 @@ app.post('/api/erp/sync', async (req, res) => {
             }
         }
 
-        console.log('[ERP] Đang đợi render báo cáo...');
+        progress('Đang đợi hệ thống render báo cáo (10s)...', 0.45);
         await new Promise(r => setTimeout(r, 10000));
 
         // --- 5. Export Strategy with Fallback ---
@@ -2077,7 +2083,7 @@ app.post('/api/erp/sync', async (req, res) => {
         ];
 
         let exportBtn = null;
-        console.log('[ERP] Tìm nút Export (tối đa 30s)...');
+        progress('Đang tìm nút Export...', 0.55);
         for (let attempt = 1; attempt <= 15; attempt++) {
             for (const sel of exportBtnSelectors) {
                 const el = await page.$(sel);
@@ -2090,7 +2096,7 @@ app.post('/api/erp/sync', async (req, res) => {
         const data = []; // Results container
 
         if (exportBtn) {
-            console.log('Found Export Button! Proceeding with Excel...');
+            progress('Đang tiến hành xuất Excel...', 0.65);
             await page.evaluate(el => el.click(), exportBtn);
             await new Promise(r => setTimeout(r, 4000));
 
@@ -2118,7 +2124,7 @@ app.post('/api/erp/sync', async (req, res) => {
 
             // Wait for file
             // ... (Re-using generic wait logic implicitly or skipping to parsing)
-            console.log('Waiting for download...');
+            progress('Đang đợi tải tệp xuống...', 0.75);
             await new Promise(r => setTimeout(r, 15000));
 
             // Parse File
@@ -2145,10 +2151,10 @@ app.post('/api/erp/sync', async (req, res) => {
                         }
                     });
                 }
-                console.log(`Excel parsed: ${data.length} items`);
+                progress(`Đã đọc ${data.length} mã vật tư từ Excel`, 0.85);
             }
         } else {
-            console.log('⚠️ KHÔNG TÌM THẤY NÚT EXPORT. Thử cào dữ liệu HTML (Fallback)...');
+            progress('Không tìm thấy nút Export. Chuyển sang cào dữ liệu HTML...', 0.7);
 
             // HTML SCRAPING LOGIC
             const htmlItems = await page.evaluate(() => {
@@ -2191,7 +2197,7 @@ app.post('/api/erp/sync', async (req, res) => {
             });
 
             if (htmlItems.length > 0) {
-                console.log(`HTML Scraping thành công: ${htmlItems.length} dòng.`);
+                progress(`Đã cào ${htmlItems.length} dòng từ HTML`, 0.85);
                 htmlItems.forEach(i => {
                     data.push({
                         sku: i.sku,
@@ -2201,21 +2207,18 @@ app.post('/api/erp/sync', async (req, res) => {
                     });
                 });
             } else {
-                console.log('HTML Scraping cũng không tìm thấy dữ liệu.');
+                progress('HTML Scraping không tìm thấy dữ liệu.', 0.8);
             }
         }
 
         await browser.close();
 
         if (data.length > 0) {
+            progress('Đang lưu dữ liệu vào cơ sở dữ liệu...', 0.95);
             // Save to DB
             withTransaction(db, async () => {
-                // Xóa sạch dữ liệu cũ để bảng mới khớp 100% (Tránh dư thừa mã cũ)
-                await new Promise((resolve, reject) => {
-                    db.run('DELETE FROM erp_stock', (err) => {
-                        if (err) reject(err); else resolve();
-                    });
-                });
+                // KHÔNG xóa sạch dữ liệu cũ nữa để bảo toàn số KK
+                // Chúng ta sẽ set quantity = 0 cho các mã không xuất hiện trong lượt sync này
 
                 const stmt = db.prepare(`
                     INSERT INTO erp_stock (sku, sku_plain, name, warehouse, quantity, updatedAt) 
@@ -2227,10 +2230,10 @@ app.post('/api/erp/sync', async (req, res) => {
                         sku_plain = excluded.sku_plain,
                         difference = CAST(COALESCE(total_kk, 0) AS REAL) - CAST(REPLACE(excluded.quantity, ',', '') AS REAL)
                 `);
-                const now = new Date().toISOString();
+
                 for (const item of data) {
                     await new Promise((resolve, reject) => {
-                        stmt.run(item.sku, normalizeSku(item.sku), item.name, item.warehouse, item.quantity, now, (err) => {
+                        stmt.run(item.sku, normalizeSku(item.sku), item.name, item.warehouse, item.quantity, syncMarker, (err) => {
                             if (err) reject(err); else resolve();
                         });
                     });
@@ -2241,13 +2244,34 @@ app.post('/api/erp/sync', async (req, res) => {
                         if (err) reject(err); else resolve();
                     });
                 });
+
+                // Cập nhật các mã KHÔNG có trong lần sync này thành Qty = 0
+                // Chỉ áp dụng cho kho đang sync (nếu có chọn kho)
+                let clearQuery = `UPDATE erp_stock SET quantity = '0', updatedAt = ?, 
+                                 difference = CAST(COALESCE(total_kk, 0) AS REAL)
+                                 WHERE updatedAt < ?`;
+                let clearParams = [syncMarker, syncMarker];
+                if (warehouse) {
+                    clearQuery += ` AND warehouse = ?`;
+                    clearParams.push(warehouse);
+                }
+
+                await new Promise((resolve, reject) => {
+                    db.run(clearQuery, clearParams, (err) => {
+                        if (err) reject(err); else resolve();
+                    });
+                });
+
             }).then(() => {
-                res.json({ message: 'Sync successful', count: data.length, data: data });
+                progress('Hoàn tất đồng bộ!', 1.0);
+                res.json({ message: 'Sync successful', count: data.length });
+                io.emit('erp_update_all', {});
             }).catch(err => {
                 console.error('[ERP Sync] Transition error:', err);
                 res.status(500).json({ error: 'Sync failed: ' + err.message });
             });
         } else {
+            progress('Lỗi: Không lấy được dữ liệu!', 1.0);
             res.status(500).json({ error: 'Không lấy được dữ liệu (Excel & HTML đều thất bại).' });
         }
 
@@ -2453,13 +2477,10 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
         });
 
         if (data.length > 0) {
+            const syncMarker = new Date().toISOString();
             withTransaction(db, async () => {
-                // Luôn xóa sạch bảng erp_stock trước khi nhận bảng mới để số liệu khớp 100% với file Excel
-                await new Promise((resolve, reject) => {
-                    db.run('DELETE FROM erp_stock', (err) => {
-                        if (err) reject(err); else resolve();
-                    });
-                });
+                // KHÔNG xóa sạch dữ liệu cũ nữa để bảo toàn số KK
+                // Chúng ta sẽ set quantity = 0 cho các mã không xuất hiện trong file Excel này
 
                 const stmt = db.prepare(`
                     INSERT INTO erp_stock (sku, sku_plain, name, warehouse, quantity, updatedAt) 
@@ -2468,12 +2489,13 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
                         quantity = excluded.quantity,
                         name = excluded.name,
                         sku_plain = excluded.sku_plain,
-                        updatedAt = excluded.updatedAt
+                        updatedAt = excluded.updatedAt,
+                        difference = CAST(COALESCE(total_kk, 0) AS REAL) - CAST(REPLACE(excluded.quantity, ',', '') AS REAL)
                 `);
-                const now = new Date().toISOString();
+
                 for (const item of data) {
                     await new Promise((resolve, reject) => {
-                        stmt.run(item.sku, normalizeSku(item.sku), item.name, item.warehouse, item.quantity, now, (err) => {
+                        stmt.run(item.sku, normalizeSku(item.sku), item.name, item.warehouse, item.quantity, syncMarker, (err) => {
                             if (err) reject(err); else resolve();
                         });
                     });
@@ -2484,6 +2506,27 @@ app.post('/api/erp/import', upload.single('file'), (req, res) => {
                         if (err) reject(err); else resolve();
                     });
                 });
+
+                // Cập nhật các mã KHÔNG có trong file này thành Qty = 0
+                // Chỉ áp dụng cho kho đang import (nếu file Excel có chỉ định kho)
+                // Hoặc nếu import cho 1 kho cụ thể từ dropdown
+                let clearQuery = `UPDATE erp_stock SET quantity = '0', updatedAt = ?,
+                                  difference = CAST(COALESCE(total_kk, 0) AS REAL)
+                                  WHERE updatedAt < ?`;
+                let clearParams = [syncMarker, syncMarker];
+
+                // Nếu User chọn kho từ Dropdown (warehouse variable)
+                if (warehouse && warehouse !== 'Tất cả') {
+                    clearQuery += ` AND warehouse = ?`;
+                    clearParams.push(warehouse);
+                }
+
+                await new Promise((resolve, reject) => {
+                    db.run(clearQuery, clearParams, (err) => {
+                        if (err) reject(err); else resolve();
+                    });
+                });
+
             }).then(() => {
                 io.emit('erp_update_all', {}); // Thêm dòng này để thông báo cho toàn bộ UI cập nhật
                 res.json({ message: 'Import successful', count: data.length });

@@ -6,6 +6,7 @@ import 'package:inventor/providers/settings_provider.dart';
 import 'user_management_screen.dart';
 import 'audit_history_tab.dart';
 import 'notifications_tab.dart';
+import 'system_screen.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class AdminScreen extends StatefulWidget {
@@ -61,6 +62,13 @@ class _AdminScreenState extends State<AdminScreen> {
                 Colors.red,
                 () =>
                     _navigateTo(context, 'Thông báo', const NotificationsTab()),
+              ),
+              _buildAdminMenu(
+                context,
+                'Hệ thống',
+                Icons.settings_suggest_outlined,
+                Colors.indigo,
+                () => _navigateTo(context, 'Cấu hình Hệ thống', const SystemScreen()),
               ),
             ],
           );
